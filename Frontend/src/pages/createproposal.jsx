@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Tg from "../components/toggle";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import $ from 'jquery'; 
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';

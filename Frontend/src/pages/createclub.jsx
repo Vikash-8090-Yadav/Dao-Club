@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 import Tg from '../components/toggle';
 
