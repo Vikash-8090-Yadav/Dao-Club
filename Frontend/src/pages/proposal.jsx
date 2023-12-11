@@ -3,16 +3,34 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import $ from 'jquery'; 
 
+import { marketplaceAddress } from "../config";
+import {Web3} from 'web3';
+
+import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+
 
 import getProposalById from '../getProposalById';
 import GetClub from '../getclub';
 import Tg from "../components/toggle";
 
 
-import { useAuth } from "../components/Auth";
+
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+var contractPublic = null;
+
+
+async function getContract(userAddress) {
+    contractPublic = await new web3.eth.Contract(ABI.abi,marketplaceAddress);
+    console.log(contractPublic)
+    if(userAddress != null && userAddress != undefined) {
+      contractPublic.defaultAccount = userAddress;
+    }
+  }
+
 
 async function runProposal() {
-  await getContract();
+  var filWalletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(filWalletAddress);
   if(contractPublic != undefined) {
     var option_execution = $('#option_execution').val()
     var password = $('#passwordShowPVExecution').val();
@@ -30,25 +48,39 @@ async function runProposal() {
     var proposalId = localStorage.getItem("proposalId");
     try {
       const my_wallet = await web3.eth.accounts.wallet.load(password);
+     
       // console.log( my_wallet.address)
     if(my_wallet !== undefined)
     {
+      // var clubId = localStorage.getItem("clubId");
+    // var proposalId = localStorage.getItem("proposalId");
+    var filWalletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(filWalletAddress);
+  // alert(filWalletAddress)
+    // const clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
+    // const amnt = web3.utils.fromWei(clubs.amount.toString(), 'ether')
+      alert("Heyy")
+      
+
       $('.errorExecution').css("display","none");
       $('.successExecution').css("display","block");
       $('.successExecution').text("Running...");
         try {
+          
           if(option_execution == 'execute') {
+            alert("inside option")
             const query = contractPublic.methods.executeProposal(clubId,proposalId);
             const encodedABI = query.encodeABI();
             
             const signedTx = await this.web3.eth.accounts.signTransaction(
               {
                 from: my_wallet[0].address,
-        gasPrice: "20000000000",
-        gas: "2000000",
-        to: this.contractPublic.options.address,
-        data: encodedABI,
-                //value: amountAE
+                gasLimit: "21000000",
+                        maxFeePerGas: "300000000",
+                        maxPriorityFeePerGas: "100000000",
+            to: contractPublic.options.address,
+            data: encodedABI,
+                value: 1
               },
               my_wallet[0].privateKey,
               false
@@ -62,11 +94,11 @@ async function runProposal() {
               const signedTx = await this.web3.eth.accounts.signTransaction(
                 {
                   from: my_wallet[0].address,
-                  gasPrice: "20000000000",
-                  gas: "2000000",
-                  to: this.contractPublic.options.address,
-                  data: encodedABI,
-                  //value: amountAE
+                  gasLimit: "21000000",
+                          maxFeePerGas: "300000000",
+                          maxPriorityFeePerGas: "100000000",
+              to: contractPublic.options.address,
+              data: encodedABI,
                 },
                 my_wallet[0].privateKey,
                 false
@@ -87,7 +119,7 @@ async function runProposal() {
         $('.errorExecution').css("display","none");
         $('.successExecution').css("display","block");
         $('.successExecution').text("The execution was successful ");
-        location.reload();
+        window.location.reload();
       } else {
         $('.valid-feedback').css('display','none');
           $('.invalid-feedback').css('display','block');
@@ -114,7 +146,8 @@ async function runProposal() {
 
 
 async function voteOnProposal() {
-  await getContract();
+  var filWalletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(filWalletAddress);
   if(contractPublic != undefined) {
     var option_vote = $('#option_vote').val()
     var password = $('#passwordShowPVVote').val();
@@ -141,45 +174,54 @@ async function voteOnProposal() {
         const encodedABI = query.encodeABI();
 
 
+        
+
         const nonce = await web3.eth.getTransactionCount(my_wallet[0].address);
-        if (web3 && web3.eth) {
-          try {
-            const signedTx = await web3.eth.accounts.signTransaction({
-              from: my_wallet[0].address,
-      gasPrice: "20000000000",
-      gas: "2000000",
-      to: this.contractPublic.options.address,
-      data: encodedABI,
-      nonce: nonce,
-        // value: amountAE
-      },
-      my_wallet[0].privateKey,
-      false
-    );
-    //
+      
+        // if (web3 && web3.eth) {
+          
+        //   try {
+        //     alert("Heyy")
+        //     const signedTx = await web3.eth.accounts.signTransaction(
+        //       {
+                
+        //         from: my_wallet[0].address,
+        //         gasLimit: "21000000",
+        //         maxFeePerGas: "300000000",
+        //         maxPriorityFeePerGas: "100000000",
+        //         to: contractPublic.options.address,
+        //         data: encodedABI,
+               
+               
+        //       },
+        //       my_wallet[0]["privateKey"],
+        //       false,
+        //     );
+        //     alert("11")
         
-            const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-            console.log('Transaction ReccreateProposaleipt:', clubId);
-          } catch (error) {
-            console.error('Error sending signed transaction:', error);
-          }
-        } else {
-          console.error('web3 instance is not properly initialized.');
-        }
+        //     const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        //     console.log('Transaction ReccreateProposaleipt:', clubId);
+        //   } catch (error) {
+        //     console.error('Error sending signed transaction:', error);
+        //   }
+        // } else {
+        //   console.error('web3 instance is not properly initialized.');
+        // }
         
-      //   const signedTx = await this.web3.eth.accounts.signTransaction(
-      //     {
-      //       from: my_wallet[0].address,
-      //   gasPrice: "20000000000",
-      //   gas: "2000000",
-      //   to: this.contractPublic.options.address,
-      //   data: encodedABI,
-      //       //value: amountAE
-      //     },
-      //     my_wallet[0].privateKey,
-      //     false
-      //   );
-      //   var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        const signedTx = await this.web3.eth.accounts.signTransaction(
+          {
+            from: my_wallet[0].address,
+            gasLimit: "21000000",
+                    maxFeePerGas: "300000000",
+                    maxPriorityFeePerGas: "100000000",
+        to: this.contractPublic.options.address,
+        data: encodedABI,
+            //value: amountAE
+          },
+          my_wallet[0].privateKey,
+          false
+        );
+        var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
       } catch (error) {
         console.log(error)
         $('.successVote').css("display","none");
@@ -193,7 +235,7 @@ async function voteOnProposal() {
       $('#errorVote').css("display","none");
       $('#successVote').css("display","block");
       $('#successVote').text("Your vote was successful ");
-      location.reload();
+      window.location.reload();
     } else {
       $('.valid-feedback').css('display','none');
         $('.invalid-feedback').css('display','block');
@@ -204,19 +246,11 @@ async function voteOnProposal() {
 }
 
 
-
-
-
-
-
-
-
-
 async function verifyUserInClub() {
   var clubId = localStorage.getItem("clubId");
   var filWalletAddress = localStorage.getItem("filWalletAddress");
   if(clubId != null) {
-    await getContract();
+    await getContract(filWalletAddress);
     if(contractPublic != undefined) {
       var user = await contractPublic.methods.isMemberOfClub(filWalletAddress,clubId).call();
       if(user) {
@@ -232,7 +266,6 @@ async function verifyUserInClub() {
 
 function Proposal() {
 
-  const { logout } = useAuth();
 
 
     useEffect(() => {
@@ -690,7 +723,7 @@ function Proposal() {
           >
             Cancel
           </button>
-          <a className="btn btn-primary" onClick={logout} id="btnLogout">
+          <a className="btn btn-primary" onClick={''} id="btnLogout">
             Logout
           </a>
         </div>

@@ -3,13 +3,10 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import GetClubs from '../getClubs';
 import Tg from "../components/toggle";
 import $ from 'jquery'; 
-import { useAuth } from "../components/Auth";
+
+
 
 function JoinClub() {
-
-  const { logout } = useAuth();
-
- 
  
   
 
@@ -230,7 +227,7 @@ function JoinClub() {
           <div className="modal-body">Select "Logout" below if you are ready to end your current session in this browser.</div>
           <div className="modal-footer">
             <button className="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a className="btn btn-primary"  onClick={logout} id="btnLogout">Logout</a>
+            <a className="btn btn-primary"  id="btnLogout">Logout</a>
           </div>
         </div>
       </div>

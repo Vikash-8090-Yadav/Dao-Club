@@ -1,12 +1,33 @@
 
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
+import $ from 'jquery'; 
+
+import { marketplaceAddress } from "./config";
+import {Web3} from 'web3';
+
+import ABI from "./SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+
+
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+var contractPublic = null;
+
+
+
+async function getContract(userAddress) {
+    contractPublic = await new web3.eth.Contract(ABI.abi,marketplaceAddress);
+    console.log(contractPublic)
+    if(userAddress != null && userAddress != undefined) {
+      contractPublic.defaultAccount = userAddress;
+    }
+  }
 
 
 
 
 async function getProposalById(){
-  await getContract();
+  var filWalletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(filWalletAddress);
   if(contractPublic != undefined) {
     var aeWalletAddress = localStorage.getItem("filWalletAddress");
     var clubId = localStorage.getItem("clubId");

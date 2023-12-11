@@ -1,14 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";;
-
-import $ from 'jquery'; 
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Tg from "../components/toggle";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from "../components/Auth";
+import $ from 'jquery'; 
+import { marketplaceAddress } from "../config";
+import {Web3} from 'web3';
+import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+
+
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+
+var contractPublic = null;
+
+
+async function getContract(userAddress) {
+  contractPublic =  new web3.eth.Contract(ABI.abi,marketplaceAddress);
+  console.log(contractPublic)
+  if(userAddress != null && userAddress != undefined) {
+    contractPublic.defaultAccount = userAddress;
+  }
+}
+
 function CreateProposal() {
 
-  const { logout } = useAuth();
+
   const [Password, setPassword] = useState('');
   const [description, setDescription] = useState('');
   const [title, setTitle] = useState('');
@@ -17,6 +33,9 @@ function CreateProposal() {
 
   
   async function createProposal() {
+    var walletAddress = localStorage.getItem("filWalletAddress");
+    // alert(walletAddress) /// /////
+    await getContract(walletAddress);
     if(contractPublic != null) {
       var proposal_description = $('#proposal_description').val();
       var proposal_address = $('#proposal_address').val();
@@ -74,18 +93,21 @@ function CreateProposal() {
             const nonce = await web3.eth.getTransactionCount(my_wallet[0].address);
             if (web3 && web3.eth) {
               try {
-                const signedTx = await web3.eth.accounts.signTransaction({
-                  from: my_wallet[0].address,
-          gasPrice: "20000000000",
-          gas: "2000000",
-          to: this.contractPublic.options.address,
-          data: encodedABI,
-          nonce: nonce,
-            // value: amountAE
-          },
-          my_wallet[0].privateKey,
-          false
-        );
+                const signedTx = await web3.eth.accounts.signTransaction(
+                  {
+                    
+                    from: my_wallet[0].address,
+                    gasLimit: "210000000",
+            maxFeePerGas: "3000000000",
+            maxPriorityFeePerGas: "10000000",
+                    to: contractPublic.options.address,
+                    data: encodedABI,
+                   
+                   
+                  },
+                  my_wallet[0]["privateKey"],
+                  false,
+                );
         //
             
                 const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -541,7 +563,7 @@ onChange={(e) => setDestination(e.target.value)}
           >
             Cancel
           </button>
-          <a className="btn btn-primary"  onClick={logout} id="btnLogout">
+          <a className="btn btn-primary"  onClick={''} id="btnLogout">
             Logout
           </a>
         </div>

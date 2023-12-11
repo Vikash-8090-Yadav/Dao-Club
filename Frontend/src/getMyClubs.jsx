@@ -2,18 +2,39 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import club from "./pages/club";
+import { marketplaceAddress } from "./config";
+import {Web3} from 'web3';
+import $ from 'jquery'; 
+import ABI from "./SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
-window.changeClub = (clubId) => {
-    localStorage.setItem('clubId', clubId);
-    window.location.href = '/club';
-  };
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+var contractPublic = null;
 
+
+
+  async function getContract(userAddress) {
+    contractPublic = await new web3.eth.Contract(ABI.abi,marketplaceAddress);
+    console.log(contractPublic)
+    if(userAddress != null && userAddress != undefined) {
+      contractPublic.defaultAccount = userAddress;
+    }
+  }
 
 async function GetMyClubs() {
+
+  function changeClub(clubId){
+    alert(clubId);
+    localStorage.setItem('clubId', clubId);
+    window.location.href = '/club';
+
+  }
+
+
   var walletAddress = localStorage.getItem("filWalletAddress");
   await getContract(walletAddress);
   if(contractPublic != undefined) {
     var clubs = await contractPublic.methods.getMyClubs().call()
+    console.log(clubs)
     if(clubs.length > 0) {
 
       var list = document.querySelector('.my_clubs');
@@ -40,13 +61,21 @@ async function GetMyClubs() {
 
         table.className = 'table';
         table.appendChild(thead);
-
         clubs.forEach((valor) => {
+         
           if(valor.clubId != 0) {
             var tbodyTr = document.createElement('tr');
         var contractTd = document.createElement('td');
-        contractTd.innerHTML = "<a class='btn btn-success' onclick='changeClub(" + valor.clubId + ")''>"+valor.clubId+"</a>";
-        tbodyTr.appendChild(contractTd);
+        var clubLink = document.createElement('a');
+    clubLink.className = 'btn btn-success';
+    clubLink.textContent = valor.clubId;
+    clubLink.addEventListener('click', function() {
+      changeClub(valor.clubId);
+    });
+    // var clubItem = document.createElement('div');
+
+        // contractTd.innerHTML = "<a class='btn btn-success' onclick='changeClub(" + valor.clubId + ")'>"+valor.clubId+"</a>";
+        tbodyTr.appendChild(clubLink);
         var contractTickerTd = document.createElement('td');
         contractTickerTd.innerHTML = '<b>' + valor.name + '</b>';
         tbodyTr.appendChild(contractTickerTd);

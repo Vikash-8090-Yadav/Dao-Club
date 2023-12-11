@@ -1,27 +1,72 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-
+import { BrowserRouter, Routes, Route, Link,Navigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 import GetMyClubs from "../getMyClubs";
-
+import Login from "../pages/login";
 import Tg from "./toggle";
 
 
 
 import $ from 'jquery'; 
+import { marketplaceAddress } from "../config";
+import {Web3} from 'web3';
 
+
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+var contractPublic = null;
+
+
+async function checkBalance() {
+  try {
+    const myWallet = localStorage.getItem("filWalletAddress");
+    if (!myWallet) {
+      // Handle the case where the wallet address is not available in localStorage
+      return;
+    }
+    
+    // Assuming you've properly initialized the web3 instance before this point
+    const balanceWei = await web3.eth.getBalance(myWallet);
+    
+    // Convert Wei to Ether (assuming Ethereum)
+    const balanceEther = web3.utils.fromWei(balanceWei, "ether");
+    
+    // Update the balance on the page
+    $('.view_balance_address').text(balanceEther);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
 function Base() {
+  
+  const navigate = useNavigate();
+  function Logout(){
+    web3.eth.accounts.wallet.clear();
+    localStorage.clear();
+    navigate('/login');
+  
+  }
 
-  
-  
   useEffect(() => {
     {
-      $('.view_balance_address').text(2+"TC");
-      var myWallet = localStorage.getItem("principal")
+      if(localStorage.getItem('filWalletAddress') != null) {
+        checkBalance();
+        //checkCurrentBlock();
+        const myWallet = localStorage.getItem("filWalletAddress")
         $('.current_account_text').text(myWallet);
+      }
+
       GetMyClubs(); // Call the imported function here
     }
   }, []);
+  var isAuthenticated = localStorage.getItem('filWalletAddress');
+
+
+  if (isAuthenticated == null) {
+
+    // Redirect to login page if not authenticated
+    return <Login/>;
+  } else{
 
   return (
     <div id="page-top">
@@ -369,7 +414,7 @@ function Base() {
           >
             Cancel
           </button>
-          <a className="btn btn-primary" onClick={''} id="btnLogout">
+          <a className="btn btn-primary" href="/login" id="btnLogout">
             Logout
           </a>
         </div>
@@ -381,6 +426,7 @@ function Base() {
 </div>
 
   )
+  }
 };
 
 export default Base;

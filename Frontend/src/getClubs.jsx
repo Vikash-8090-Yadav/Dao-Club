@@ -2,15 +2,11 @@ import React from 'react'
 import { marketplaceAddress } from './config';
 import {Web3} from 'web3';
 import $ from 'jquery'; 
-import ABI from "./artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+import ABI from "./SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 
 
-const web3 = new Web3(new Web3.providers.HttpProvider("https://celo-alfajores.infura.io/v3/b208399f926f487093f45debc86299bb"));
-
-async function changeClub(clubId) {
-  localStorage.setItem("clubId", clubId);
-  window.location.href = "/club";
-}
 
 var contractPublic = null;
 
@@ -25,7 +21,14 @@ async function getContract(userAddress) {
 
 
 async function GetClubs() {
-  await getContract();
+
+  async function changeClub(clubId) {
+    localStorage.setItem("clubId", clubId);
+    window.location.href = "/club";
+  }
+  var walletAddress = localStorage.getItem("filWalletAddress");
+
+  await getContract(walletAddress);
   if(contractPublic != undefined) {
     var clubs = await contractPublic.methods.listClubs().call()
     if(clubs.length > 0) {
@@ -58,8 +61,14 @@ async function GetClubs() {
       clubs.forEach((valor, clave) => {
         var tbodyTr = document.createElement('tr');
         var contractTd = document.createElement('td');
-        contractTd.innerHTML = "<a class='btn btn-success' onclick='changeClub(" + valor.clubId + ")''>"+valor.clubId+"</a>";
-        tbodyTr.appendChild(contractTd);
+        var clubLink = document.createElement('a');
+    clubLink.className = 'btn btn-success';
+    clubLink.textContent = valor.clubId;
+    clubLink.addEventListener('click', function() {
+      changeClub(valor.clubId);
+    });
+        contractTd.innerHTML = "<a class='btn btn-success' onclick='changeClub(" + valor.clubId + ")'>"+valor.clubId+"</a>";
+        tbodyTr.appendChild(clubLink);
         var contractTickerTd = document.createElement('td');
         contractTickerTd.innerHTML = '<b>' + valor.name + '</b>';
         tbodyTr.appendChild(contractTickerTd);

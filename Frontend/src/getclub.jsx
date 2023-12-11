@@ -2,14 +2,13 @@ import React from 'react'
 import { marketplaceAddress } from './config';
 import {Web3} from 'web3';
 import $ from 'jquery'; 
-import ABI from "./artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+import ABI from "./SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
-
-const web3 = new Web3(new Web3.providers.HttpProvider("https://celo-alfajores.infura.io/v3/b208399f926f487093f45debc86299bb"));
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 var contractPublic = null;
 
 async function getContract(userAddress) {
-    contractPublic = await new web3.eth.Contract(ABI.abi,marketplaceAddress);
+    contractPublic =  new web3.eth.Contract(ABI.abi,marketplaceAddress);
     console.log(contractPublic)
     if(userAddress != null && userAddress != undefined) {
       contractPublic.defaultAccount = userAddress;
@@ -23,8 +22,8 @@ async function GetClub() {
 
     var clubId = localStorage.getItem("clubId");
     // alert(clubId)
-  
-    await getContract();
+    var walletAddress = localStorage.getItem("filWalletAddress");
+    await getContract(walletAddress);
     try {
       // alert(clubId)
       var club = await contractPublic.methods.getClubById(clubId).call();

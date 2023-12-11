@@ -3,16 +3,16 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import $ from 'jquery'; 
-import ABI from "../artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
 import GetClub from "../getclub";
 
 import GetProposals from "../getProposals";
 
-import { useAuth } from "../components/Auth";
+
 import Tg from "../components/toggle";
 
-const web3 = new Web3(new Web3.providers.HttpProvider("https://celo-alfajores.infura.io/v3/b208399f926f487093f45debc86299bb"));
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 var contractPublic = null;
 
 
@@ -73,22 +73,30 @@ async function contributeClub() {
           //  alert("Yes");
           // console.log(accounts1)
 
-          const signedTx = await web3.eth.accounts.signTransaction(
-            {
-              from: my_wallet[0].address,
-              gasPrice: "20000000000",
-              gas: "2000000",
-              to: this.contractPublic.options.address,
-              data: encodedABI,
-                value: amountAE
-              },
-              my_wallet[0].privateKey,
-              false
-            );
+          
+
+
             if (web3 && web3.eth) {
               try {
+                const signedTx = await web3.eth.accounts.signTransaction(
+                  {
+                    
+                    from: my_wallet[0].address,
+                    gasLimit: "210000000",
+            maxFeePerGas: "3000000000",
+            maxPriorityFeePerGas: "10000000",
+                    to: contractPublic.options.address,
+                    data: encodedABI,
+                    value:amountAE,
+                   
+                   
+                  },
+                  my_wallet[0]["privateKey"],
+                  false,
+                );
+
                 const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-                // console.log('Transaction Receipt:', clubId);
+                console.log('Transaction Receipt:', clubId);
               } catch (error) {
                 console.error('Error sending signed transaction:', error);
               }
@@ -97,7 +105,7 @@ async function contributeClub() {
             }
           // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
           console.log('Transaction Receipt:', clubId);
-          alert("No")
+          
         } catch(e) {
           console.log(e);
           $('.successContributeClub').css('display','none');
@@ -112,7 +120,7 @@ async function contributeClub() {
     $('.errorContributeClub').css('display','none');
     $('.successContributeClub').css("display","block");
     $('.successContributeClub').text("You have contributed to the club successfully");
-    window.location.reload()
+    window.location.reload();
   } else {
     $('.successContributeClub').css('display','none');
     $('.errorContributeClub').css("display","block");
@@ -144,7 +152,6 @@ async function verifyUserInClub() {
 
 
 function Club() {
-  const { logout } = useAuth();
   const [password, setPassword] = useState('');
 
 
@@ -684,7 +691,7 @@ function Club() {
             >
               Cancel
             </button>
-            <a className="btn btn-primary"  onClick={logout}  id="btnLogout">
+            <a className="btn btn-primary"  onClick={''}  id="btnLogout">
               Logout
             </a>
           </div>

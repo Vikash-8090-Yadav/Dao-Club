@@ -7,12 +7,22 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Tg from '../components/toggle';
 
-import { useAuth } from "../components/Auth";
+import { marketplaceAddress } from "../config";
+import {Web3} from 'web3';
 import $ from 'jquery'; 
+import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
+
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+
+
+var contractPublic = null;
+
+
 function CreateClub() {
 
-
-  const { logout } = useAuth();
+  
+  
+ 
   const [clubName, setClubName] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,8 +30,17 @@ function CreateClub() {
 
   
   async function createClub() {
+    async function getContract(userAddress) {
+      contractPublic =  new web3.eth.Contract(ABI.abi,marketplaceAddress);
+      console.log(contractPublic)
+      if(userAddress != null && userAddress != undefined) {
+        // alert("inside")
+        contractPublic.defaultAccount = userAddress;
+      }
+    }
+
     var walletAddress = localStorage.getItem("filWalletAddress");
-    // alert(walletAddress)
+    alert(walletAddress)
     var password = $('#trx_password').val();
     await getContract(walletAddress);
     // alert("password showing sucessfull") //
@@ -49,7 +68,9 @@ function CreateClub() {
       {
         
         $('.loading_message_creating').css("display","block");
+        console.log("The contractPublic is ",contractPublic)
         const query = contractPublic.methods.createClub(clubName);
+ 
         const encodedABI = query.encodeABI();
         // alert(this.contractPublic.options.address)
        
@@ -57,16 +78,20 @@ function CreateClub() {
         {
           
           from: my_wallet[0].address,
-          gasPrice: "20000000000",
-          gas: "2000000",
-          to: this.contractPublic.options.address,
+          gasLimit: "210000000",
+  maxFeePerGas: "3000000000",
+  maxPriorityFeePerGas: "10000000",
+          to: contractPublic.options.address,
           data: encodedABI,
+         
          
         },
         my_wallet[0]["privateKey"],
         false,
       );
+      
         var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        alert("SUCESS")
         $('#club_name').val('');
         $('#errorCreateClub').css("display","none");
         $('.loading_message_creating').css("display","none");
