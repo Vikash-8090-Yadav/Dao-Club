@@ -128,6 +128,55 @@ async function contributeClub() {
   }
 }
 
+async function leaveClub() {
+  $('.successJoinLeaveClub').css('display','none');
+  $('.errorJoinLeaveClub').css('display','none');
+  var clubId = localStorage.getItem("clubId");
+  var password = $('#passwordShowPVLeave').val();
+  if(password == '') {
+    $('.successJoinLeaveClub').css('display','none');
+    $('.errorJoinLeaveClub').css("display","block");
+    $('.errorJoinLeaveClub').text("Password is invalid");
+    return;
+  }
+  const my_wallet = await web3.eth.accounts.wallet.load(password);
+  if(my_wallet !== undefined)
+  {
+    
+    if(clubId != null) {
+      $('.successJoinLeaveClub').css("display","block");
+      $('.successJoinLeaveClub').text("Leaving the club...");
+      await getContract();
+      if(contractPublic != undefined) {
+        
+        const query = contractPublic.methods.leaveClub(clubId);
+        const encodedABI = query.encodeABI();
+        const signedTx = await web3.eth.accounts.signTransaction(
+          {
+            from: my_wallet[0].address,
+            gasLimit: "21000000",
+            maxFeePerGas: "300000000",
+            maxPriorityFeePerGas: "100000000",
+    to: contractPublic.options.address,
+    data: encodedABI,
+            //value: amountAE 
+          },
+          my_wallet[0].privateKey,
+          false
+        );
+        var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        }
+      }
+    $('.errorJoinLeaveClub').css('display','none');
+    $('.successJoinLeaveClub').css("display","block");
+    $('.successJoinLeaveClub').text("You have left the club successfully");
+    window.location.reload();
+  } else {
+    $('.successJoinLeaveClub').css('display','none');
+    $('.errorJoinLeaveClub').css("display","block");
+    $('.errorJoinLeaveClub').text("Password is invalid");
+  }
+}
 
 
 
@@ -184,18 +233,19 @@ function Club() {
           const nonce = await web3.eth.getTransactionCount(my_wallet[0].address);
             if (web3 && web3.eth) {
               try {
-                const signedTx = await web3.eth.accounts.signTransaction({
-                  from: my_wallet[0].address,
-          gasPrice: "20000000000",
-          gas: "2000000",
-          to: this.contractPublic.options.address,
-          data: encodedABI,
-          nonce: nonce,
-            // value: amountAE
-          },
-          my_wallet[0].privateKey,
-          false
-        );
+                const signedTx = await web3.eth.accounts.signTransaction(
+                  {
+                    from: my_wallet[0].address,
+                    gasLimit: "21000000",
+                    maxFeePerGas: "300000000",
+                    maxPriorityFeePerGas: "100000000",
+            to: contractPublic.options.address,
+            data: encodedABI,
+                    //value: amountAE 
+                  },
+                  my_wallet[0].privateKey,
+                  false
+                );
         //
             
                 const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -498,11 +548,11 @@ function Club() {
                         onChange={(e) => setPassword(e.target.value)}
                       />{" "}
                       <br />
-                      <a href="#" id="btnJoinClub" onClick={() => {
+                      <div id="btnJoinClub" onClick={() => {
                         joinClub();
                       }} className="btn btn-success">
                         Confirm
-                      </a>{" "}
+                      </div>{" "}
                       <br />
                     </p>
                     <div
@@ -582,9 +632,11 @@ function Club() {
                         className="form-control"
                       />{" "}
                       <br />
-                      <a href="#" id="btnLeaveClub" className="btn btn-success">
+                      <div  id="btnLeaveClub"  onClick={() => {
+                        leaveClub();
+                      }} className="btn btn-success">
                         Confirm
-                      </a>{" "}
+                      </div >{" "}
                       <br />
                     </p>
                     <div

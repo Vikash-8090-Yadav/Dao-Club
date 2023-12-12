@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-
+import lighthouse from '@lighthouse-web3/sdk'
 
 
 import Tg from '../components/toggle';
@@ -14,6 +14,7 @@ import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/Investm
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 
 
+const apiKey = "207e0c12.0ca654f5c03a4be18a3185ea63c31f81"
 var contractPublic = null;
 
 
@@ -61,6 +62,23 @@ function CreateClub() {
       
       if(my_wallet !== undefined)
       {
+        alert("Uploading to lighthouse")
+        const data = JSON.stringify({
+          clubName,
+
+        });
+
+        const response = await lighthouse.uploadText(data, apiKey, "Club")
+        
+        let response1 = await axios.get("https://api.lighthouse.storage/api/lighthouse/get_proof", {
+    params: {
+        cid: response.data.Hash,
+        network: "testnet" // Change the network to mainnet when ready
+    }
+
+
+})
+console.log(response1.data);
         // alert("my_wallet is doing great")
         // alert(await web3.eth.gasPrice)
       try

@@ -16,6 +16,7 @@ import Tg from "../components/toggle";
 
 
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
+
 var contractPublic = null;
 
 
@@ -28,9 +29,10 @@ async function getContract(userAddress) {
   }
 
 
-async function runProposal() {
+async function runProposal(event) {
+  
   var filWalletAddress = localStorage.getItem("filWalletAddress");
-  await getContract(filWalletAddress);
+  await getContract();
   if(contractPublic != undefined) {
     var option_execution = $('#option_execution').val()
     var password = $('#passwordShowPVExecution').val();
@@ -48,66 +50,64 @@ async function runProposal() {
     var proposalId = localStorage.getItem("proposalId");
     try {
       const my_wallet = await web3.eth.accounts.wallet.load(password);
-     
-      // console.log( my_wallet.address)
+    
     if(my_wallet !== undefined)
     {
-      // var clubId = localStorage.getItem("clubId");
-    // var proposalId = localStorage.getItem("proposalId");
-    var filWalletAddress = localStorage.getItem("filWalletAddress");
-  await getContract(filWalletAddress);
-  // alert(filWalletAddress)
-    // const clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
-    // const amnt = web3.utils.fromWei(clubs.amount.toString(), 'ether')
-      alert("Heyy")
       
 
       $('.errorExecution').css("display","none");
       $('.successExecution').css("display","block");
       $('.successExecution').text("Running...");
+      var clubId = localStorage.getItem("clubId");
+      var proposalId = localStorage.getItem("proposalId");
+      
         try {
           
           if(option_execution == 'execute') {
-            alert("inside option")
-            const query = contractPublic.methods.executeProposal(clubId,proposalId);
+  
+
+     
+            const query = await contractPublic.methods.executeProposal(clubId,proposalId);
             const encodedABI = query.encodeABI();
             
-            const signedTx = await this.web3.eth.accounts.signTransaction(
+            const signedTx = await web3.eth.accounts.signTransaction(
               {
                 from: my_wallet[0].address,
                 gasLimit: "21000000",
-                        maxFeePerGas: "300000000",
-                        maxPriorityFeePerGas: "100000000",
-            to: contractPublic.options.address,
-            data: encodedABI,
-                value: 1
+                maxFeePerGas: "300000000",
+                maxPriorityFeePerGas: "100000000",
+        to: contractPublic.options.address,
+        data: encodedABI,
+                //value: amountAE 
               },
               my_wallet[0].privateKey,
               false
             );
-            var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+            var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+           
           } else {
             if(option_execution == 'close') {
               const query = contractPublic.methods.closeProposal(clubId,proposalId);
               const encodedABI = query.encodeABI();
               
-              const signedTx = await this.web3.eth.accounts.signTransaction(
+              const signedTx = await web3.eth.accounts.signTransaction(
                 {
                   from: my_wallet[0].address,
                   gasLimit: "21000000",
-                          maxFeePerGas: "300000000",
-                          maxPriorityFeePerGas: "100000000",
-              to: contractPublic.options.address,
-              data: encodedABI,
+                maxFeePerGas: "300000000",
+                maxPriorityFeePerGas: "100000000",
+        to: contractPublic.options.address,
+        data: encodedABI,
                 },
                 my_wallet[0].privateKey,
                 false
               );
-              var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+              var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
             }
           }
           
         } catch (error) {
+  
           $('.successExecution').css("display","none");
           $('.errorExecution').css("display","block");
           $('.errorExecution').text("Error executing/closing the proposal");
@@ -135,13 +135,6 @@ async function runProposal() {
     
   }
 }
-
-
-
-
-
-
-
 
 
 
@@ -177,53 +170,24 @@ async function voteOnProposal() {
         
 
         const nonce = await web3.eth.getTransactionCount(my_wallet[0].address);
-      
-        // if (web3 && web3.eth) {
-          
-        //   try {
-        //     alert("Heyy")
-        //     const signedTx = await web3.eth.accounts.signTransaction(
-        //       {
-                
-        //         from: my_wallet[0].address,
-        //         gasLimit: "21000000",
-        //         maxFeePerGas: "300000000",
-        //         maxPriorityFeePerGas: "100000000",
-        //         to: contractPublic.options.address,
-        //         data: encodedABI,
-               
-               
-        //       },
-        //       my_wallet[0]["privateKey"],
-        //       false,
-        //     );
-        //     alert("11")
         
-        //     const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-        //     console.log('Transaction ReccreateProposaleipt:', clubId);
-        //   } catch (error) {
-        //     console.error('Error sending signed transaction:', error);
-        //   }
-        // } else {
-        //   console.error('web3 instance is not properly initialized.');
-        // }
-        
-        const signedTx = await this.web3.eth.accounts.signTransaction(
+        const signedTx = await web3.eth.accounts.signTransaction(
           {
             from: my_wallet[0].address,
             gasLimit: "21000000",
                     maxFeePerGas: "300000000",
                     maxPriorityFeePerGas: "100000000",
-        to: this.contractPublic.options.address,
+        to: contractPublic.options.address,
         data: encodedABI,
             //value: amountAE
           },
           my_wallet[0].privateKey,
           false
         );
-        var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
       } catch (error) {
         console.log(error)
+      
         $('.successVote').css("display","none");
         $('.errorVote').css("display","block");
         $('.errorVote').text("You already voted on this proposal");
@@ -571,12 +535,12 @@ function Proposal() {
                       className="form-control"
                     />{" "}
                     <br />
-                    <a href="#" 
+                    <div 
                      onClick={() => {
                         voteOnProposal();
                       }}id="btnVote" className="btn btn-success">
                       Confirm
-                    </a>{" "}
+                    </div>{" "}
                     <br />
                   </p>
                   <div
@@ -612,11 +576,11 @@ function Proposal() {
                       className="form-control"
                     />{" "}
                     <br />
-                    <a href="" id="btnExecution" onClick={() => {
+                    <div href="" id="btnExecution" onClick={() => {
                         runProposal();
                       }} className="btn btn-success">
                       Confirm
-                    </a>{" "}
+                    </div>{" "}
                     <br />
                   </p>
                   <div

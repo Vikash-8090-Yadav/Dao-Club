@@ -107,7 +107,7 @@ async function runProposal() {
         gas: "2000000",
         to: this.contractPublic.options.address,
         data: encodedABI,
-                //value: amountAE
+                //value: amountAE 
               },
               my_wallet[0].privateKey,
               false

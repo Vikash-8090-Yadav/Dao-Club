@@ -35,6 +35,8 @@ async function getProposalById(){
     var clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
     if(clubs != undefined) {
 
+      localStorage.setItem("AddressbyId",clubs.destination);
+
       $('.proposal_description').text(clubs.description);
       $('#proposal_creator').text(clubs.creator);
       $('#proposal_destination').text(clubs.destination);
