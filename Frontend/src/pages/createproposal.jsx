@@ -6,11 +6,12 @@ import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
-
+import lighthouse from '@lighthouse-web3/sdk'
+import axios from 'axios';
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
-
+const apiKey = "207e0c12.0ca654f5c03a4be18a3185ea63c31f81"
 var contractPublic = null;
-
+var cid = null;
 
 async function getContract(userAddress) {
   contractPublic =  new web3.eth.Contract(ABI.abi,marketplaceAddress);
@@ -20,6 +21,25 @@ async function getContract(userAddress) {
   }
 }
 
+
+async function Registerjob(){
+  const formData = new FormData();
+  const requestReceivedTime = new Date()
+  
+  const endDate = requestReceivedTime.setMonth(requestReceivedTime.getMonth() + 1)
+  const replicationTarget = 2
+  const epochs = 4 // how many epochs before deal end should deal be renewed
+  formData.append('cid', cid)
+  formData.append('endDate', endDate)
+  formData.append('replicationTarget', replicationTarget)
+  formData.append('epochs', epochs)
+
+  const response = await axios.post(
+      `https://calibration.lighthouse.storage/api/register_job`,
+      formData
+  )
+  console.log(response.data)
+}
 function CreateProposal() {
 
 
@@ -65,7 +85,30 @@ function CreateProposal() {
       {
         $('.loading_message_creating').css("display","block");
         proposal_amount = web3.utils.toWei(proposal_amount.toString(), 'ether');
-        const query = contractPublic.methods.createProposal(clubId,proposal_amount, proposal_address, proposal_description);
+
+        alert("Uploading to lighthouse")
+        const data = JSON.stringify({
+          clubId,proposal_amount, proposal_address, proposal_description,description
+
+        });
+        const dealParams = {
+          num_copies: 1,
+          repair_threshold: 28800,
+          renew_threshold: 240,
+          miner: ["t017840"],
+          network: 'calibration',
+          add_mock_data: 2
+        };
+
+        const response = await lighthouse.uploadText(data, apiKey,dealParams, proposal_description)
+
+        console.log("The cid is ",response.data.Hash);
+
+        cid = response.data.Hash;
+        
+        
+
+        const query = contractPublic.methods.createProposal(clubId,proposal_amount, proposal_address, proposal_description,cid);
         const encodedABI = query.encodeABI();
         // const account1s = web3.eth.accounts;
             //  alert("Yes");
@@ -106,7 +149,6 @@ function CreateProposal() {
                   my_wallet[0]["privateKey"],
                   false,
                 );
-        //
             
                 const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
                 console.log('Transaction ReccreateProposaleipt:', clubId);
@@ -148,6 +190,7 @@ function CreateProposal() {
         $('#proposal_description').val('');
         $('#proposal_address').val('');
         $('#proposal_amount').val('');
+
         $('#trx_password').val('');
         $('#errorCreateProposal').css("display","none");
         $('.loading_message_creating').css("display","none");
@@ -439,7 +482,7 @@ onChange={(e) => setDestination(e.target.value)}
                       <input
                         type="button"
                         id="createProposalButton"
-                        defaultValue="Create"
+                        defaultValue="Create and Upload to LightHouse"
                         onClick={() => {
                           createProposal();
                         }}
@@ -452,6 +495,8 @@ onChange={(e) => setDestination(e.target.value)}
                         Creating the proposal...
                       </span>{" "}
                       <br />
+
+                      
                       <p
                         className="valid-feedback"
                         id="successCreateProposal"
@@ -464,6 +509,18 @@ onChange={(e) => setDestination(e.target.value)}
                       >
                         Error
                       </p>
+            
+                      <input
+                        type="button"
+                        id="createProposalButton"
+                        defaultValue="Regsiter JOB(RAAS)"
+                        onClick={() => {
+                          Registerjob();
+                        }}
+                        className="btn btn-primary btn-block"
+                      />
+                      
+                      <br />
                     </div>
                   </div>
                 </div>

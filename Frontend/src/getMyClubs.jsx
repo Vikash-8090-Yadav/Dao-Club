@@ -34,7 +34,7 @@ async function GetMyClubs() {
   await getContract(walletAddress);
   if(contractPublic != undefined) {
     var clubs = await contractPublic.methods.getMyClubs().call()
-    console.log(clubs[0].CID)
+    // console.log(clubs[0].CID)
     if(clubs.length > 0) {
 
       var list = document.querySelector('.my_clubs');
@@ -58,7 +58,7 @@ async function GetMyClubs() {
         theadTr.appendChild(usdHeader);
         
         var usdHeader = document.createElement('th');
-        usdHeader.innerHTML = 'DealStatus';
+        usdHeader.innerHTML = 'PODSI';
         theadTr.appendChild(usdHeader);
         thead.appendChild(theadTr)
 

@@ -65,6 +65,12 @@ contract InvestmentClub {
         uint256 votesAgainst;
         uint256 proposedAt;
         uint256 proposalExpireAt;
+        string Cid;
+        string PieceCid;
+        string carsize;
+        string posdiverification;
+        string storageProvider;
+        uint256 DealId;
     }
 
     struct Vote {
@@ -161,7 +167,7 @@ contract InvestmentClub {
         club.pool += uint256(msg.value);
     }
     
-    function createProposal(uint256 clubId, uint256 amount, address destination, string memory description) public {
+    function createProposal(uint256 clubId, uint256 amount, address destination, string memory description,string memory Cid) public {
         require(isClubIdExist(clubId), "the club does not exist");
         
         ClubLibrary.Club storage club = clubs[clubId];
@@ -183,7 +189,30 @@ contract InvestmentClub {
         proposal.votesAgainst = 0;
         proposal.proposedAt= block.timestamp;
         proposal.proposalExpireAt= block.timestamp + 5 minutes;
+         proposal.Cid=Cid;
+         proposal.PieceCid ="IN Process";
+         proposal.carsize = "IN-Process";
+         proposal.DealId =0;
+         proposal.storageProvider="IN-Process";
+         proposal.posdiverification="Un-Verified";
+
         club.proposalCounter = proposalId;
+    }
+    function proverifiydocs(uint256 clubId, uint256 proposalId) public{
+        ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
+        proposal.posdiverification="Verified";
+    }
+
+    function getCarpiece(uint256 clubId,uint256 proposalId,string memory _Piece,string memory _carsize) public {
+        ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
+        proposal.PieceCid=_Piece;
+        proposal.carsize=_carsize;
+    }
+
+    function getdelandstorgae(uint256 clubId,uint256 proposalId,uint256 _dealId,string memory _storage) public {
+        ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
+        proposal.DealId=_dealId;
+        proposal.storageProvider=_storage;
     }
     function isVotingOn(uint256 clubId,uint256 proposalId) view internal returns(bool) {
         ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
@@ -263,7 +292,14 @@ contract InvestmentClub {
                 proposal.votesFor,
                 proposal.votesAgainst,
                 proposal.proposedAt,
-        proposal.proposalExpireAt);
+        proposal.proposalExpireAt,
+        proposal.Cid,
+        proposal.PieceCid,
+        proposal.carsize,
+        proposal.posdiverification,
+        proposal.storageProvider,
+        proposal.DealId
+        );
         return proposalInfo;
     }
 
@@ -287,7 +323,13 @@ contract InvestmentClub {
                 proposal.votesFor,
                 proposal.votesAgainst,
                 proposal.proposedAt,
-        proposal.proposalExpireAt
+        proposal.proposalExpireAt,
+        proposal.Cid,
+        proposal.PieceCid,
+        proposal.carsize,
+        proposal.posdiverification,
+        proposal.storageProvider,
+        proposal.DealId
             );
             index++;
             

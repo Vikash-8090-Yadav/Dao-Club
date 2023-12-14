@@ -38,6 +38,8 @@ async function getdealId(){
 
     
 
+    
+
   const cid1 = clubs[0].CID;
 
   console.log(cid1)
@@ -50,19 +52,29 @@ async function getdealId(){
 
 
   const dealInfo = response1.data.dealInfo;
+
+  
+
+  
   const pieceCID= response1.data.pieceCID;
+
+  if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
+    console.error('Verification Failed');
+    return;
+}
+
   DealId= response1.data.dealInfo[0].dealId;
+
+ 
 
   console.log(DealId);
   const dealStatusLink = document.getElementById("dealStatusLink");
 
 if (dealStatusLink) {
+  
   dealStatusLink.href = `https://calibration.filfox.info/en/deal/${DealId}`;
 }
 
-  // <div>
-  //     <a href="{`https://calibration.filfox.info/en/deal/${DealId}`" target="__"> </a>
-  //   </div>
 }
 async function verify(){
   var walletAddress = localStorage.getItem("filWalletAddress");
@@ -86,22 +98,29 @@ async function verify(){
 
     const dealInfo = response1.data.dealInfo;
     const pieceCID= response1.data.pieceCID;
+
+    if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
+      console.error('Verification Failed');
+  
+     
+      return;
+  }
+
     DealId= response1.data.dealInfo[0].dealId;
+
+    
 
     alert(DealId);
 
     console.log(pieceCID)
-
-    if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
-        console.error('Verification Failed');
-
-        alert("Please Wait!,minter is still veryfying the CID");
-        return false;
-    }
-
     console.log('Document Verified:', pieceCID);
 
     var password = $('#verifdocs').val();
+    if(password ==''){
+      console.log("The password is wrong");
+      return;
+    }
+    console.log(password)
     const my_wallet = await web3.eth.accounts.wallet.load(password);
 
     const query = await contractPublic.methods.verifiydocs(clubId);
@@ -317,7 +336,7 @@ async function verifyUserInClub() {
 
 function Club() {
 
-  getdealId();
+  // getdealId();
 
   
   const [password, setPassword] = useState('');
@@ -638,12 +657,10 @@ function Club() {
                           
                         </div>
                         <input
-                        type="text"
+                        type="password"
                         id="verifdocs"
                         className="form-control form-control-user"
                         placeholder="Password"
-                        
-                        // onChange={(e) => setClubName(e.target.value)}
                       />{" "}
                         <div  className="btn btn-secondary btn-sm mt-2" onClick={verify}>
                        
@@ -669,7 +686,7 @@ function Club() {
                         <div className="h5 mb-0 font-weight-bold text-gray-800 ">
                           
                         </div>
-                        <div>
+                        <div onClick={getdealId}>
                         
                         <a id="dealStatusLink" href="#" target="__" className="btn btn-secondary btn-sm mt-2">
     DEAL STATUS

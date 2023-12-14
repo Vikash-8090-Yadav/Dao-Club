@@ -53,6 +53,11 @@ async function GetClubs() {
         usdHeader.innerHTML = 'Proposals';
         theadTr.appendChild(usdHeader);
 
+        var usdHeader = document.createElement('th');
+        usdHeader.innerHTML = 'PODSI';
+        theadTr.appendChild(usdHeader);
+        thead.appendChild(theadTr)
+
         thead.appendChild(theadTr)
 
         table.className = 'table';
@@ -78,6 +83,12 @@ async function GetClubs() {
         var balanceUSDTd = document.createElement('td');
         balanceUSDTd.innerHTML = '<b>' + valor.proposalCount+ '</b>';
         tbodyTr.appendChild(balanceUSDTd);
+
+        var balanceUSDTd = document.createElement('td');
+        balanceUSDTd.innerHTML = '<b>' + valor.posdiverification+ '</b>';
+        tbodyTr.appendChild(balanceUSDTd);
+
+        
         tbody.appendChild(tbodyTr);
       });
 

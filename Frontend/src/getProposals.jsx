@@ -55,7 +55,11 @@ window.changeProposal=(proposalId)=> {
           
   
           var usdHeader2 = document.createElement('th');
-          usdHeader2.innerHTML = 'Status';
+          usdHeader2.innerHTML = 'Proposal Status';
+          theadTr.appendChild(usdHeader2);
+
+          var usdHeader2 = document.createElement('th');
+          usdHeader2.innerHTML = 'PODSI';
           theadTr.appendChild(usdHeader2);
   
           thead.appendChild(theadTr)
@@ -84,6 +88,9 @@ window.changeProposal=(proposalId)=> {
           tbodyTr.appendChild(balanceTd);
           var balanceUSDTd2 = document.createElement('td');
           balanceUSDTd2.innerHTML = '<b>' + valor.status+ '</b>';
+          tbodyTr.appendChild(balanceUSDTd2);
+          var balanceUSDTd2 = document.createElement('td');
+          balanceUSDTd2.innerHTML = '<b>' + valor.posdiverification+ '</b>';
           tbodyTr.appendChild(balanceUSDTd2);
           tbody.appendChild(tbodyTr);
         });

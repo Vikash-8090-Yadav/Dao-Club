@@ -17,6 +17,9 @@ console.log("THeres is",response1);
 
 
 console.log("Deal ID: " + response1.data.dealInfo[0].dealId);
+const carszie = response1.data.carFileSize;
+
+console.log(carszie)
 
 // const proof = await axios.get("https://api.lighthouse.storage/api/lighthouse/get_proof?cid=QmRYsm6rVRDFenqjMHUoRFqhTqHUo2fbQgWkChdD5ibj2t")
 
@@ -55,6 +58,7 @@ async function verifyDocument() {
 
     const dealInfo = response1.data.dealInfo;
     const pieceCID= response1.data.pieceCID;
+    
 
     if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
         console.error('Verification Failed');

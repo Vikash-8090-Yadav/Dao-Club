@@ -10,7 +10,7 @@ import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/Investm
 
 import DataAbi from "../DataoFilecoin/artifacts/contracts/datadao.sol/DataDAO.json"
 
-
+import axios from 'axios';
 import getProposalById from '../getProposalById';
 import GetClub from '../getclub';
 import Tg from "../components/toggle";
@@ -31,6 +31,228 @@ async function getContract(userAddress) {
       contractPublic.defaultAccount = userAddress;
     }
   }
+
+  var DealId = null;
+
+async function getdealId(){
+  const clubId =  localStorage.getItem("clubId");
+  
+  var walletAddress = localStorage.getItem("filWalletAddress");
+  
+
+  var clubs = await contractPublic.methods.getProposalsByClub(clubId).call();
+  // console.log(clubs[0].CID)
+
+    
+    const proposalId = localStorage.getItem("proposalId")
+
+    
+
+    
+
+  const cid1 = clubs[proposalId-1].Cid;
+
+  console.log(cid1)
+
+  const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=${cid1}`)
+  // const { pieceCID, dealInfo } = poDSI;
+
+  console.log(response1.data);
+
+
+
+  const dealInfo = response1.data.dealInfo;
+
+  
+
+  
+  const pieceCID= response1.data.pieceCID;
+
+  if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
+    console.error('Verification Failed');
+    return;
+}
+
+  DealId= response1.data.dealInfo[0].dealId;
+  const st =response1.data.dealInfo[0].storageProvider;
+  console.log(st);
+
+  const dealstElement = document.getElementById("dealst");
+  dealstElement.textContent = DealId;
+
+ 
+
+  console.log(DealId);
+  const dealStatusLink = document.getElementById("dealStatusLink");
+
+if (dealStatusLink) {
+  
+  dealStatusLink.href = `https://calibration.filfox.info/en/deal/${DealId}`;
+}
+
+
+
+
+
+
+
+
+}
+async function verify(){
+  var walletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(walletAddress);
+  var clubs = await contractPublic.methods.getMyClubs().call()
+  // console.log(clubs[0].CID)
+
+    const clubId =  localStorage.getItem("clubId");
+    const proposalId = localStorage.getItem("proposalId")
+
+    
+
+  const cid1 = clubs[0].CID;
+  console.log(cid1);
+
+  const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=${cid1}`)
+    // const { pieceCID, dealInfo } = poDSI;
+
+    console.log(response1.data);
+
+  
+
+    const dealInfo = response1.data.dealInfo;
+    const pieceCID= (response1.data.pieceCID);
+    const carszie = (response1.data.carFileSize);
+
+    if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
+      console.error('Verification Failed');
+  
+     
+      return;
+  }
+
+    DealId= response1.data.dealInfo[0].dealId;
+    
+    var clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
+    console.log(clubs.PieceCid);
+    // console.log(clubs);
+    const dealstElement = document.getElementById("picd");
+    dealstElement.textContent =  clubs.PieceCid;
+    const unverd = document.getElementById("unver");
+
+    unverd.textContent =  clubs.posdiverification;
+
+
+    
+
+    console.log(pieceCID)
+    console.log('Document Verified:', pieceCID);
+
+    var password = $('#verifdocs').val();
+    if(password ==''){
+      console.log("The password is wrong");
+      return;
+    }
+    console.log(password)
+    const my_wallet = await web3.eth.accounts.wallet.load(password);
+
+    const query = await contractPublic.methods.proverifiydocs(clubId,proposalId);
+    const encodedABI = query.encodeABI();
+    const carq = await contractPublic.methods.getCarpiece(clubId,proposalId,pieceCID,"120");
+
+    const encodedABI1 = carq.encodeABI();
+
+    if (web3 && web3.eth) {
+      try {
+        const signedTx = await web3.eth.accounts.signTransaction(
+          {
+            
+            from: my_wallet[0].address,
+            gasLimit: "210000000",
+    maxFeePerGas: "3000000000",
+    maxPriorityFeePerGas: "10000000",
+            to: contractPublic.options.address,
+            data: encodedABI,
+          },
+          my_wallet[0]["privateKey"],
+          false,
+        );
+
+        const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        console.log('Transaction Receipt:', clubId);
+      } catch (error) {
+        console.error('Error sending signed transaction:', error);
+      }
+    } else {
+      console.error('web3 instance is not properly initialized.');
+    }
+  // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  console.log('Transaction Receipt:', clubId);
+
+  if (web3 && web3.eth) {
+    try {
+      const signedTx = await web3.eth.accounts.signTransaction(
+        {
+          
+          from: my_wallet[0].address,
+          gasLimit: "210000000",
+  maxFeePerGas: "3000000000",
+  maxPriorityFeePerGas: "10000000",
+          to: contractPublic.options.address,
+          data: encodedABI1,
+        },
+        my_wallet[0]["privateKey"],
+        false,
+      );
+
+      const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+      console.log('Transaction Receipt:', clubId);
+    } catch (error) {
+      console.error('Error sending signed transaction:', error);
+    }
+  } else {
+    console.error('web3 instance is not properly initialized.');
+  }
+// var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+console.log('Transaction Receipt:', clubId);
+const st =response1.data.dealInfo[0].storageProvider;
+
+const carq1 = await contractPublic.methods.getdelandstorgae(clubId,proposalId,DealId,st);
+
+
+    const encodedABI11 = carq1.encodeABI();
+
+    if (web3 && web3.eth) {
+      try {
+        const signedTx = await web3.eth.accounts.signTransaction(
+          {
+            
+            from: my_wallet[0].address,
+            gasLimit: "210000000",
+    maxFeePerGas: "3000000000",
+    maxPriorityFeePerGas: "10000000",
+            to: contractPublic.options.address,
+            data: encodedABI11,
+          },
+          my_wallet[0]["privateKey"],
+          false,
+        );
+  
+        const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        console.log('Transaction Receipt:', clubId);
+      } catch (error) {
+        console.error('Error sending signed transaction:', error);
+      }
+    } else {
+      console.error('web3 instance is not properly initialized.');
+    }
+  // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  console.log('Transaction Receipt:', clubId);
+    
+
+    // alert("Done");
+    return true;
+}
+
 
 
 async function getDatainstance() {
@@ -119,7 +341,7 @@ async function runProposal(event) {
           }
           
         } catch (error) {
-          alert(error)
+          // alert(error)
           $('.successExecution').css("display","none");
           $('.errorExecution').css("display","block");
           $('.errorExecution').text("Error executing/closing the proposal");
@@ -162,23 +384,6 @@ async function voteOnProposal() {
   var clubId = localStorage.getItem("clubId");
   var proposalId = localStorage.getItem("proposalId");
 
-
- const re =  await datacontractinstance.methods.createAddCIDProposal("0x000181E2039220206B86B273FF34FCE19D6B804EFF5A3F5747ADA4EAA22F1D49C01E52DDB7875B4B",100);
-console.log("The new cont is",re);
-console.log(datacontractinstance);
-
-
-  const res = await datacontractinstance.methods.isVotingOn(proposalId)
-
-  alert(res)
-
-  console.log(res)
-
-  if(!res){
-    alert("Voting time period Over ");
-    return;
-  }
-  alert("Passed")
   if(contractPublic != undefined) {
     var option_vote = $('#option_vote').val()
     var password = $('#passwordShowPVVote').val();
@@ -231,7 +436,8 @@ console.log(datacontractinstance);
         );
         var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
       } catch (error) {
-        console.log(error)
+        console.log(error.message);
+        
       
         $('.successVote').css("display","none");
         $('.errorVote').css("display","block");
@@ -279,6 +485,7 @@ function Proposal() {
 
     useEffect(() => {
         {
+          verify();getdealId();
             GetClub();verifyUserInClub();getProposalById();
         }
       }, []);
@@ -479,11 +686,11 @@ function Proposal() {
                 </div>
               </div>
             </div>
-            <div className="col-xl-3 col-md-6 mb-4">
-              <div className="card border-left-success shadow h-100 py-2">
+            <div className="col-xl-2 col-md-6 mb-4">
+              <div className="card border-left-primary shadow h-100 py-2">
                 <div className="card-body">
                   <div className="row no-gutters align-items-center">
-                    <div className="col mr-2">
+                  <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-secondary text-uppercase mb-1">
                         Proposals{" "}
                       </div>
@@ -492,7 +699,66 @@ function Proposal() {
                       </a>
                     </div>
                     <div className="col-auto">
-                      <i className="fas fa-clipboard-list fa-2x text-gray-300" />
+                      <i className="fas fa-calendar fa-2x text-gray-300" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+            <div className="col-xl-3 col-md-6 mb-4">
+              <div className="card border-left-success shadow h-100 py-2">
+                <div className="card-body">
+                  <div className="row no-gutters align-items-center">
+                    <div className="col mr-2">
+                      <div className="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                        Proposals{" "}
+                      </div>
+                      <input
+                        type="password"
+                        id="verifdocs"
+                        className="form-control form-control-user"
+                        placeholder="Password"
+                        
+                        // onChange={(e) => setClubName(e.target.value)}
+                      />{" "}
+                      <br></br>
+                      <div className="btn btn-secondary"  onClick={verify}>
+                        PROPOSAL VERIFICATION
+                      </div>
+                      <br></br>
+                      <br></br>
+                      <b id = "unver"className="text-red-700">UN VERIFIED</b>
+  <b id = "picd" className="ml-4">-</b>
+                    </div>
+                   
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-2 col-md-6 mb-4">
+              <div className="card border-left-primary shadow h-100 py-2">
+                <div className="card-body">
+                  <div className="row no-gutters align-items-center">
+                    <div className="col mr-2">
+                      <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        Check Deal Status
+                      </div>
+                      <b>Deal Id</b>
+                      <div id = "dealst" className="h5 mb-0 font-weight-bold text-gray-800 ">
+                        -
+                      </div>
+                      <a id="dealStatusLink" href="#" target="__" >
+
+                      <div
+                        className="btn btn-secondary btn-sm mt-2"
+                        onClick={getdealId}
+                      >
+                        Deal Status
+                      </div>
+                      </a>
+                    </div>
+                    <div className="col-auto">
+                      <i className="fas fa-calendar fa-2x text-gray-300" />
                     </div>
                   </div>
                 </div>
@@ -533,6 +799,39 @@ function Proposal() {
                       <b>
                         <span id="proposal_amount" />
                       </b>{" "}
+                      <br />
+                      CID of Document :{" "}
+                      <b>
+                        <span id="CID" />
+                      </b>{" "}
+                      <br />PieceCid:{" "}
+                      <b>
+                        <span id="PieceCid" />
+                      </b>{" "}
+                      <br />storageProvider:{" "}
+                      <b>
+                        <span id="storageProvider" />
+                      </b>{" "}
+                      <br />DealId:{" "}
+                      <b>
+                        <span id="DealId" />
+                      </b>{" "}
+                      <br/>
+                      
+                      Job Type:{""}
+                      <b>
+                        <span id="DealId" /> ALL
+                      </b>{""}
+                      <br />
+                      Voting perios Starts At:{""}
+                      <b>
+                        <span id="proposedAt" /> 
+                      </b>{""}
+                      <br />
+                      Voting Period Ends At:{""}
+                      <b>
+                        <span id="proposalExpireAt" />
+                      </b>{""}
                       <br />
                     </div>
                   </div>
