@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
+pragma solidity ^0.8.10;
 library ClubLibrary {
     struct Club {
         uint256 id;
@@ -10,6 +9,9 @@ library ClubLibrary {
         uint256 pool;
         mapping(uint256 => Proposal) proposals;
         uint256 proposalCounter;
+        string CID;
+        string posdiverification;
+        uint256 DealId;
     }
 
     struct Member {
@@ -26,6 +28,14 @@ library ClubLibrary {
         string description;
         uint256 votesFor;
         uint256 votesAgainst;
+        uint256 proposedAt;
+        uint256 proposalExpireAt;
+        string Cid;
+        string PieceCid;
+        string carsize;
+        string posdiverification;
+        string storageProvider;
+        uint256 DealId;
         mapping(address => bool) voted;
     }
 }
@@ -39,6 +49,9 @@ contract InvestmentClub {
         uint256 memberCount;
         uint256 proposalCount;
         uint256 pool;
+        string CID;
+        string posdiverification;
+        uint256 DealId;
     }
 
     struct ProposalInfo {
@@ -50,6 +63,8 @@ contract InvestmentClub {
         string description;
         uint256 votesFor;
         uint256 votesAgainst;
+        uint256 proposedAt;
+        uint256 proposalExpireAt;
     }
 
     struct Vote {
@@ -73,7 +88,7 @@ contract InvestmentClub {
     function getClubById(uint256 clubId) public view returns (ClubInfo memory) {
         require(isClubIdExist(clubId), "the club does not exist");
         ClubLibrary.Club storage clubReal = clubs[clubId];
-        ClubInfo memory club = ClubInfo(clubReal.id, clubReal.name, clubReal.memberCounter, clubReal.proposalCounter, clubReal.pool);
+        ClubInfo memory club = ClubInfo(clubReal.id, clubReal.name, clubReal.memberCounter, clubReal.proposalCounter, clubReal.pool,clubReal.CID,clubReal.posdiverification, clubReal.DealId);
         return club;
     }
 
@@ -83,7 +98,7 @@ contract InvestmentClub {
         for (uint256 i = 1; i <= clubCounter; i++) {
             ClubLibrary.Club storage club = clubs[i];
             if (isMemberOfClub(msg.sender, club.id)) {
-                clubsInfo[index] = ClubInfo(club.id, club.name, club.memberCounter,club.proposalCounter, club.pool);
+                clubsInfo[index] = ClubInfo(club.id, club.name, club.memberCounter,club.proposalCounter, club.pool,club.CID,club.posdiverification,club.DealId);
                 index++;
             }
         }
@@ -91,7 +106,7 @@ contract InvestmentClub {
         return clubsInfo;
     }
     
-    function createClub(string memory name) public returns (uint256) {
+    function createClub(string memory name,string memory Cid) public returns (uint256) {
         uint256 clubId = clubCounter + 1;
         ClubLibrary.Club storage club = clubs[clubId];
         club.id = clubId;
@@ -99,7 +114,8 @@ contract InvestmentClub {
         club.pool = 0;
         club.proposalCounter = 0;
         club.memberCounter = 1;
-        
+        club.CID = Cid;
+        club.posdiverification="Un-Verified";
         ClubLibrary.Member memory member = ClubLibrary.Member({
             memberAddress: msg.sender,
             balance: 0
@@ -110,6 +126,12 @@ contract InvestmentClub {
         clubCounter = clubId;
         
         return clubId;
+    }
+    
+    function verifiydocs(uint256 clubId) public{
+        require(isClubIdExist(clubId), "The club does not exist");
+        ClubLibrary.Club storage club = clubs[clubId];
+        club.posdiverification="Verified";
     }
     
     function joinClub(uint256 clubId) public {
@@ -141,6 +163,7 @@ contract InvestmentClub {
     
     function createProposal(uint256 clubId, uint256 amount, address destination, string memory description) public {
         require(isClubIdExist(clubId), "the club does not exist");
+        
         ClubLibrary.Club storage club = clubs[clubId];
         require(isMemberOfClub(msg.sender, clubId), "You are not a member of the club");
         //require(club.pool >= amount, "The amount exceeds the pool of the club");
@@ -158,34 +181,19 @@ contract InvestmentClub {
         proposal.description = description;
         proposal.votesFor = 0;
         proposal.votesAgainst = 0;
-        
+        proposal.proposedAt= block.timestamp;
+        proposal.proposalExpireAt= block.timestamp + 5 minutes;
         club.proposalCounter = proposalId;
     }
-
-    // function getVotesForProposal(uint256 clubId, uint256 proposalId) external view returns (address[] memory) {
-    //     require(isClubIdExist(clubId), "Club does not exist");
-    //     require(isProposalIdExist(proposalId, clubId), "Proposal does not exist");
-
-    //     ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
-    //     uint256 totalVotes = proposal.votesFor+proposal.votesAgainst;
-    //     Vote[] memory votes = new Vote[](totalVotes);
-    //     uint256 index = 0;
-
-    //     for (uint256 i = 0; i < totalVotes; i++) {
-    //         if (proposal.voted[i]) {
-    //             address voter = proposal.votes[i].voter;
-    //             bool inSupport = proposal.votes[i].inSupport;
-
-    //             votes[index] = Vote(voter, inSupport);
-    //             index++;
-    //         }
-    //     }
-
-    //     return votes;
-    // }
+    function isVotingOn(uint256 clubId,uint256 proposalId) view internal returns(bool) {
+        ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
+       return proposal.proposalExpireAt > block.timestamp;
+    }
 
     function voteOnProposal(uint256 clubId, uint256 proposalId, bool vote) public {
         require(isClubIdExist(clubId), "the club does not exist");
+        require(isVotingOn(clubId,proposalId), "Voting Period Finished");
+        
         ClubLibrary.Club storage club = clubs[clubId];
         require(isMemberOfClub(msg.sender, clubId), "You are not a member of the club");
         require(isProposalIdExist(proposalId, clubId), "The proposal does not exist");
@@ -204,8 +212,20 @@ contract InvestmentClub {
         }
     }
 
+       function policyOK(uint256 clubId,uint256 proposalId) internal view returns (bool) {
+        ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
+        //require(proposals[proposalID].proposalExpireAt > block.timestamp, "Voting in On");
+        return proposal.votesFor > proposal.votesAgainst;
+    }
+
     function executeProposal(uint256 clubId, uint256 proposalId) public payable {
         require(isClubIdExist(clubId), "the club does not exist");
+        
+        require(!isVotingOn(clubId,proposalId), "You can't before the Voting deadline");
+
+        require(policyOK(clubId,proposalId), "The for vote is less than Against");
+        
+
         ClubLibrary.Club storage club = clubs[clubId];
         require(isMemberOfClub(msg.sender, clubId), "You are not a member of the club");
         require(isProposalIdExist(proposalId, clubId), "The proposal does not exist");
@@ -223,6 +243,7 @@ contract InvestmentClub {
     function closeProposal(uint256 clubId, uint256 proposalId) public {
         require(isClubIdExist(clubId), "the club does not exist");
         require(isProposalIdExist(proposalId, clubId), "The proposal does not exist");
+        require(!isVotingOn(clubId,proposalId), "You can't before the Voting deadline");
         ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
         require(keccak256(bytes(proposal.status)) == keccak256(bytes("Pending")), "The proposal is not in pending status");
         require(isValidExecutor(clubId, proposalId), "Only the proposal creator can close the proposal");
@@ -240,7 +261,9 @@ contract InvestmentClub {
                 proposal.status,
                 proposal.description,
                 proposal.votesFor,
-                proposal.votesAgainst);
+                proposal.votesAgainst,
+                proposal.proposedAt,
+        proposal.proposalExpireAt);
         return proposalInfo;
     }
 
@@ -262,7 +285,9 @@ contract InvestmentClub {
                 proposal.status,
                 proposal.description,
                 proposal.votesFor,
-                proposal.votesAgainst
+                proposal.votesAgainst,
+                proposal.proposedAt,
+        proposal.proposalExpireAt
             );
             index++;
             
@@ -276,7 +301,7 @@ contract InvestmentClub {
 
         for (uint256 i = 0; i < clubCounter; i++) {
             ClubLibrary.Club storage club = clubs[i+1];
-            clubList[i] = ClubInfo(club.id, club.name, club.memberCounter, club.proposalCounter, club.pool);
+            clubList[i] = ClubInfo(club.id, club.name, club.memberCounter, club.proposalCounter, club.pool,club.CID,club.posdiverification,club.DealId);
         }
 
         return clubList;

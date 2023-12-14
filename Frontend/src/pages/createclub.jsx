@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import lighthouse from '@lighthouse-web3/sdk'
-
+import axios from 'axios';
 
 import Tg from '../components/toggle';
 
@@ -10,7 +10,7 @@ import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import $ from 'jquery'; 
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
-
+const ethers = require("ethers")
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 
 
@@ -28,7 +28,27 @@ function CreateClub() {
 
 
 
-  
+  const register_job = async(cid1) =>{
+    const formData = new FormData();
+    const cid = cid1
+    const requestReceivedTime = new Date()
+    
+    const endDate = requestReceivedTime.setMonth(requestReceivedTime.getMonth() + 1)
+    const replicationTarget = 2
+    const epochs = 4 // how many epochs before deal end should deal be renewed
+    formData.append('cid', cid)
+    formData.append('endDate', endDate)
+    formData.append('replicationTarget', replicationTarget)
+    formData.append('epochs', epochs)
+
+    const response = await axios.post(
+        `https://calibration.lighthouse.storage/api/register_job`,
+        formData
+    )
+    console.log(response.data)
+}
+
+
   async function createClub() {
     async function getContract(userAddress) {
       contractPublic =  new web3.eth.Contract(ABI.abi,marketplaceAddress);
@@ -67,26 +87,46 @@ function CreateClub() {
           clubName,
 
         });
+        const dealParams = {
+          num_copies: 2,
+          repair_threshold: 28800,
+          renew_threshold: 240,
+          miner: ["t017840"],
+          network: 'calibration',
+          add_mock_data: 2
+        };
 
-        const response = await lighthouse.uploadText(data, apiKey, "Club")
+        const response = await lighthouse.uploadText(data, apiKey,dealParams, clubName)
+
+        console.log("The cid is ",response.data.Hash);
+
+        const cid1 = response.data.Hash;
+        await register_job(cid1);
+
+
+        // const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=cid1`)
         
-        let response1 = await axios.get("https://api.lighthouse.storage/api/lighthouse/get_proof", {
-    params: {
-        cid: response.data.Hash,
-        network: "testnet" // Change the network to mainnet when ready
-    }
+//         const response1 = await axios.get("https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=QmRYsm6rVRDFenqjMHUoRFqhTqHUo2fbQgWkChdD5ibj2t")
 
 
-})
-console.log(response1.data);
-        // alert("my_wallet is doing great")
+// console.log("THeres is",response1.data);
+
+
+// // alert("The deal status is");
+// const status = await axios.get("https://calibration.lighthouse.storage/api/deal_status?cid=QmRYsm6rVRDFenqjMHUoRFqhTqHUo2fbQgWkChdD5ibj2t")
+
+// console.log("The deal status is ",status.data);
         // alert(await web3.eth.gasPrice)
+
+        // const dealStatus = await ethers.getContractAt("DealStatus", "0x01ccBC72B2f0Ac91B79Ff7D2280d79e25f745960");
+        // const st = await dealStatus.submitRaaS(ethers.utils.toUtf8Bytes("QmZfKsnm6CtRztMzKT8QhGbo4zJ1pgBNURR34Vr3awsiqP"), 2, 4, 40);
+        // console.log("st",st);
       try
       {
         
         $('.loading_message_creating').css("display","block");
         console.log("The contractPublic is ",contractPublic)
-        const query = contractPublic.methods.createClub(clubName);
+        const query = contractPublic.methods.createClub(clubName,cid1);
  
         const encodedABI = query.encodeABI();
         // alert(this.contractPublic.options.address)

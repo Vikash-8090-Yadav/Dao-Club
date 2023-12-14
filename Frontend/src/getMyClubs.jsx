@@ -34,7 +34,7 @@ async function GetMyClubs() {
   await getContract(walletAddress);
   if(contractPublic != undefined) {
     var clubs = await contractPublic.methods.getMyClubs().call()
-    console.log(clubs)
+    console.log(clubs[0].CID)
     if(clubs.length > 0) {
 
       var list = document.querySelector('.my_clubs');
@@ -56,7 +56,10 @@ async function GetMyClubs() {
         var usdHeader = document.createElement('th');
         usdHeader.innerHTML = 'Proposals';
         theadTr.appendChild(usdHeader);
-
+        
+        var usdHeader = document.createElement('th');
+        usdHeader.innerHTML = 'DealStatus';
+        theadTr.appendChild(usdHeader);
         thead.appendChild(theadTr)
 
         table.className = 'table';
@@ -85,6 +88,11 @@ async function GetMyClubs() {
         var balanceUSDTd = document.createElement('td');
         balanceUSDTd.innerHTML = '<b>' + valor.proposalCount+ '</b>';
         tbodyTr.appendChild(balanceUSDTd);
+
+        var balanceUSDTd = document.createElement('td');
+        balanceUSDTd.innerHTML = '<b>' + valor.posdiverification+ '</b>';
+        tbodyTr.appendChild(balanceUSDTd);
+
         tbody.appendChild(tbodyTr);
           }
         

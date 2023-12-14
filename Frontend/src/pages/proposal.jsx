@@ -8,16 +8,20 @@ import {Web3} from 'web3';
 
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
+import DataAbi from "../DataoFilecoin/artifacts/contracts/datadao.sol/DataDAO.json"
+
 
 import getProposalById from '../getProposalById';
 import GetClub from '../getclub';
 import Tg from "../components/toggle";
 
 
-
+const DataDaoAddress  = "0x8138489b863a68f224307a5D0Fa630917d848e25"
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 
 var contractPublic = null;
+
+var datacontractinstance = null;
 
 
 async function getContract(userAddress) {
@@ -29,10 +33,18 @@ async function getContract(userAddress) {
   }
 
 
+async function getDatainstance() {
+  datacontractinstance = await new web3.eth.Contract(DataAbi.abi,DataDaoAddress);
+  console.log(datacontractinstance)
+ 
+}
+
+
 async function runProposal(event) {
   
   var filWalletAddress = localStorage.getItem("filWalletAddress");
   await getContract();
+  await getDatainstance();
   if(contractPublic != undefined) {
     var option_execution = $('#option_execution').val()
     var password = $('#passwordShowPVExecution').val();
@@ -64,7 +76,7 @@ async function runProposal(event) {
         try {
           
           if(option_execution == 'execute') {
-  
+
 
      
             const query = await contractPublic.methods.executeProposal(clubId,proposalId);
@@ -107,7 +119,7 @@ async function runProposal(event) {
           }
           
         } catch (error) {
-  
+          alert(error)
           $('.successExecution').css("display","none");
           $('.errorExecution').css("display","block");
           $('.errorExecution').text("Error executing/closing the proposal");
@@ -139,8 +151,34 @@ async function runProposal(event) {
 
 
 async function voteOnProposal() {
+
+
+  
+  await getDatainstance();
+
+
   var filWalletAddress = localStorage.getItem("filWalletAddress");
   await getContract(filWalletAddress);
+  var clubId = localStorage.getItem("clubId");
+  var proposalId = localStorage.getItem("proposalId");
+
+
+ const re =  await datacontractinstance.methods.createAddCIDProposal("0x000181E2039220206B86B273FF34FCE19D6B804EFF5A3F5747ADA4EAA22F1D49C01E52DDB7875B4B",100);
+console.log("The new cont is",re);
+console.log(datacontractinstance);
+
+
+  const res = await datacontractinstance.methods.isVotingOn(proposalId)
+
+  alert(res)
+
+  console.log(res)
+
+  if(!res){
+    alert("Voting time period Over ");
+    return;
+  }
+  alert("Passed")
   if(contractPublic != undefined) {
     var option_vote = $('#option_vote').val()
     var password = $('#passwordShowPVVote').val();
@@ -154,8 +192,7 @@ async function voteOnProposal() {
       $('#errorCreateProposal').text("Password is invalid");
       return;
     }
-    var clubId = localStorage.getItem("clubId");
-    var proposalId = localStorage.getItem("proposalId");
+   
     const my_wallet = await web3.eth.accounts.wallet.load(password);
     if(my_wallet !== undefined)
     {
@@ -163,6 +200,14 @@ async function voteOnProposal() {
       $('.successVote').text("Voting...");
       var optionBool = option_vote == '1' ? true : false;
       try {
+
+        if(optionBool){
+          await datacontractinstance.methods.upvoteCIDProposal(proposalId);
+        }
+        else{
+          await datacontractinstance.methods.downvoteCIDProposal(proposalId);
+        }
+        
         const query = contractPublic.methods.voteOnProposal(clubId,proposalId, optionBool);
         const encodedABI = query.encodeABI();
 

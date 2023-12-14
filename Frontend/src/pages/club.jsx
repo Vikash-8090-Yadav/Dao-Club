@@ -9,12 +9,11 @@ import GetClub from "../getclub";
 
 import GetProposals from "../getProposals";
 
-
+import axios from 'axios';
 import Tg from "../components/toggle";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 var contractPublic = null;
-
 
 
 async function getContract(userAddress) {
@@ -24,6 +23,122 @@ async function getContract(userAddress) {
       contractPublic.defaultAccount = userAddress;
     }
   }
+
+
+var DealId = null;
+
+async function getdealId(){
+  
+  var walletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(walletAddress);
+  var clubs = await contractPublic.methods.getMyClubs().call()
+  // console.log(clubs[0].CID)
+
+    const clubId =  localStorage.getItem("clubId");
+
+    
+
+  const cid1 = clubs[0].CID;
+
+  console.log(cid1)
+
+  const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=${cid1}`)
+  // const { pieceCID, dealInfo } = poDSI;
+
+  console.log(response1.data);
+
+
+
+  const dealInfo = response1.data.dealInfo;
+  const pieceCID= response1.data.pieceCID;
+  DealId= response1.data.dealInfo[0].dealId;
+
+  console.log(DealId);
+  const dealStatusLink = document.getElementById("dealStatusLink");
+
+if (dealStatusLink) {
+  dealStatusLink.href = `https://calibration.filfox.info/en/deal/${DealId}`;
+}
+
+  // <div>
+  //     <a href="{`https://calibration.filfox.info/en/deal/${DealId}`" target="__"> </a>
+  //   </div>
+}
+async function verify(){
+  var walletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(walletAddress);
+  var clubs = await contractPublic.methods.getMyClubs().call()
+  // console.log(clubs[0].CID)
+
+    const clubId =  localStorage.getItem("clubId");
+
+    
+
+  const cid1 = clubs[0].CID;
+  console.log(cid1);
+
+  const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=${cid1}`)
+    // const { pieceCID, dealInfo } = poDSI;
+
+    console.log(response1.data);
+
+  
+
+    const dealInfo = response1.data.dealInfo;
+    const pieceCID= response1.data.pieceCID;
+    DealId= response1.data.dealInfo[0].dealId;
+
+    alert(DealId);
+
+    console.log(pieceCID)
+
+    if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
+        console.error('Verification Failed');
+
+        alert("Please Wait!,minter is still veryfying the CID");
+        return false;
+    }
+
+    console.log('Document Verified:', pieceCID);
+
+    var password = $('#verifdocs').val();
+    const my_wallet = await web3.eth.accounts.wallet.load(password);
+
+    const query = await contractPublic.methods.verifiydocs(clubId);
+    const encodedABI = query.encodeABI();
+
+    if (web3 && web3.eth) {
+      try {
+        const signedTx = await web3.eth.accounts.signTransaction(
+          {
+            
+            from: my_wallet[0].address,
+            gasLimit: "210000000",
+    maxFeePerGas: "3000000000",
+    maxPriorityFeePerGas: "10000000",
+            to: contractPublic.options.address,
+            data: encodedABI,
+          },
+          my_wallet[0]["privateKey"],
+          false,
+        );
+
+        const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        console.log('Transaction Receipt:', clubId);
+      } catch (error) {
+        console.error('Error sending signed transaction:', error);
+      }
+    } else {
+      console.error('web3 instance is not properly initialized.');
+    }
+  // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  console.log('Transaction Receipt:', clubId);
+    
+
+    alert("Done");
+    return true;
+}
+
 
 
 
@@ -201,6 +316,10 @@ async function verifyUserInClub() {
 
 
 function Club() {
+
+  getdealId();
+
+  
   const [password, setPassword] = useState('');
 
 
@@ -290,6 +409,7 @@ function Club() {
 
 
     useEffect(() => {
+      
         {
             GetClub();verifyUserInClub();GetProposals();
         }
@@ -498,6 +618,65 @@ function Club() {
                           -
                         </div>
                         {/* <a href="members.html" class="btn btn-primary btn-sm mt-2">View</a> */}
+                      </div>
+                      <div className="col-auto">
+                        <i className="fas fa-calendar fa-2x text-gray-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-2 col-md-6 mb-4">
+                <div className="card border-left-primary shadow h-100 py-2">
+                  <div className="card-body">
+                    <div className="row no-gutters align-items-center">
+                      <div className="col mr-2">
+                        <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                         VERIFY YOUR DOCUMENTS (PODSI)
+                        </div>
+                        <div className="h5 mb-0 font-weight-bold text-gray-800 ">
+                          
+                        </div>
+                        <input
+                        type="text"
+                        id="verifdocs"
+                        className="form-control form-control-user"
+                        placeholder="Password"
+                        
+                        // onChange={(e) => setClubName(e.target.value)}
+                      />{" "}
+                        <div  className="btn btn-secondary btn-sm mt-2" onClick={verify}>
+                       
+                          DOCS VERIFICATION
+                          </div>
+                          
+                      </div>
+                      <div className="col-auto">
+                        <i className="fas fa-calendar fa-2x text-gray-300" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-2 col-md-6 mb-4">
+                <div className="card border-left-primary shadow h-100 py-2">
+                  <div className="card-body">
+                    <div className="row no-gutters align-items-center">
+                      <div className="col mr-2">
+                        <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                         VERIFY YOUR DOCUMENTS (PODSI)
+                        </div>
+                        <div className="h5 mb-0 font-weight-bold text-gray-800 ">
+                          
+                        </div>
+                        <div>
+                        
+                        <a id="dealStatusLink" href="#" target="__" className="btn btn-secondary btn-sm mt-2">
+    DEAL STATUS
+  </a>
+                    
+                          </div>
+                          
                       </div>
                       <div className="col-auto">
                         <i className="fas fa-calendar fa-2x text-gray-300" />
