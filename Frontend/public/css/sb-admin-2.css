@@ -116,6 +116,15 @@ dl {
   margin-bottom: 1rem;
 }
 
+.mmn{
+
+  color: #0f6848;
+  padding-top: 52px;
+  text-align: center;
+
+  font-size: x-large;
+}
+
 ol ol,
 ul ul,
 ol ul,

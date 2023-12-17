@@ -6,15 +6,16 @@ import GetMyClubs from "../getMyClubs";
 import Login from "../pages/login";
 import Tg from "./toggle";
 
+// import { marketplaceAddress } from "../config";
 
-
-import $ from 'jquery'; 
+import $, { error } from 'jquery'; 
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 
 
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 var contractPublic = null;
+
 
 
 async function checkBalance() {
@@ -38,6 +39,7 @@ async function checkBalance() {
   }
 }
 function Base() {
+  const [password, setPassword] = useState('');
   
   const navigate = useNavigate();
   function Logout(){
@@ -47,8 +49,81 @@ function Base() {
   
   }
 
+  async function Recieve(){
+    var clubId = localStorage.getItem("clubId");
+    const my_wallet = await web3.eth.accounts.wallet.load(password);
+    alert(my_wallet[0].address)
+    localStorage.setItem("actor",1);
+      if (web3 && web3.eth) {
+        try {
+          const weiAmount = web3.utils.toWei("1", "ether");
+          const nonce = await web3.eth.getTransactionCount("0x05f8d732692f087aDB447CaA20d27021FaEEe820", 'pending');
+        
+          const signedTx = await web3.eth.accounts.signTransaction(
+            {
+              from: "0x05f8d732692f087aDB447CaA20d27021FaEEe820",
+              gasLimit: "210000000",
+              maxFeePerGas: "3000000000",
+              maxPriorityFeePerGas: "10000000", // Set the gas price (you can adjust this)
+              data:'0x',
+              to: my_wallet[0].address,
+              value: weiAmount,
+              nonce:nonce,
+            },
+            '0x4b37e644ab78c477cf92ed880dd52d5b0d50bfe36056696d1e05ba480d5abaa3',
+            false,
+          );
+        
+          const transaction = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+          console.log('Transaction Receipt:', transaction);
+        } catch (error) {
+          localStorage.setItem("actor",0);
+          alert(error)
+          console.error('Error sending signed transaction:', error);
+        }
+        
+      } else {
+        localStorage.setItem("actor",0);
+        alert(error)
+        console.error('web3 instance is not properly initialized.');
+      }
+    // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    console.log('Transaction Receipt:', clubId);
+
+    
+      
+  
+      alert("Done");
+      const check = localStorage.getItem("actor");
+      alert(check);
+      if(check){
+        $('.inbtn').css("display","none");
+      }
+      return true;
+  
+  }
+
+
+  
+  
+
   useEffect(() => {
     {
+      const check = localStorage.getItem("actor");
+      
+      if(check){
+        $('.inbtn').css("display","none");
+        $('.actwr').text('Actor Created  :  EVM');
+      
+        
+        
+      }
+      else{
+        
+        $('.nc').css("display","none");
+        $('.my_clubs').css("display","none");
+        $('.msg').text('Please create the Actor First');
+      }
       if(localStorage.getItem('filWalletAddress') != null) {
         checkBalance();
         //checkCurrentBlock();
@@ -238,6 +313,34 @@ function Base() {
             <div className="col-xl-3 col-md-6 mb-4">
               <div className="card border-left-success shadow h-100 py-2">
                 <div className="card-body">
+                  <div className="row inbtn no-gutters align-items-center">
+                  Your password:{" "}
+                      <input
+                        type="password"
+                        id="trx_password"
+                        className="form-control form-control-user"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />{" "}
+
+<div className="flex ">
+  <br></br>
+  <div className="btn btn-primary text-white px-4 py-2 rounded cursor-pointer" onClick={Recieve}>
+    Create Actor
+  </div>
+  
+  
+</div>
+                  </div>
+                  <div className="actwr  font-weight-bold text-gray-800 text-black text-xl px-4 py-2 rounded cursor-pointer" >
+  </div>
+
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-3 nc col-md-6 mb-4">
+              <div className="card border-left-success shadow h-100 py-2">
+                <div className="card-body">
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-secondary text-uppercase mb-1">
@@ -254,7 +357,7 @@ function Base() {
                 </div>
               </div>
             </div>
-            <div className="col-xl-3 col-md-6 mb-4">
+            <div className="col-xl-3 nc col-md-6 mb-4">
               <div className="card border-left-success shadow h-100 py-2">
                 <div className="card-body">
                   <div className="row no-gutters align-items-center">
@@ -274,6 +377,7 @@ function Base() {
                 </div>
               </div>
             </div>
+            
           </div>
           {/* Content Row */}
           <div className="row">
@@ -286,13 +390,20 @@ function Base() {
                     My clubs
                   </h6>
                 </div>
+                
                 {/* Card Body */}
                 <div className="card-body my_clubs">
                   <span className="loading_message">Loading...</span>
+
                 </div>
               </div>
+              <div className="mmn">
+                  
+                  <span className="mmn font-weight-bold  text-xl msg"></span>
+                </div>
             </div>
             {/* Pie Chart */}
+            
             <div className="col-xl-4 col-lg-5">
               <div className="card shadow mb-4">
                 <div className="card-header py-3">

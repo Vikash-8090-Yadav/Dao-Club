@@ -34,7 +34,7 @@ async function GetMyClubs() {
   await getContract(walletAddress);
   if(contractPublic != undefined) {
     var clubs = await contractPublic.methods.getMyClubs().call()
-    // console.log(clubs[0].CID)
+    console.log(clubs)
     if(clubs.length > 0) {
 
       var list = document.querySelector('.my_clubs');

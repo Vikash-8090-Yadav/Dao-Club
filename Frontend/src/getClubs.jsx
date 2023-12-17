@@ -31,6 +31,8 @@ async function GetClubs() {
   await getContract(walletAddress);
   if(contractPublic != undefined) {
     var clubs = await contractPublic.methods.listClubs().call()
+
+    console.log(clubs.length)
     if(clubs.length > 0) {
 
       var list = document.querySelector('.available_clubs');
