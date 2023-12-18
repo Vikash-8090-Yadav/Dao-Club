@@ -5,6 +5,8 @@ import {Web3} from 'web3';
 import $ from 'jquery'; 
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import GetClub from "../getclub";
 
 import GetProposals from "../getProposals";
@@ -26,6 +28,7 @@ async function getContract(userAddress) {
 
 
 var DealId = null;
+var podsi1 = null;
 
 async function getdealId(){
   
@@ -60,6 +63,7 @@ async function getdealId(){
 
   if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
     console.error('Verification Failed');
+    toast.error("Minning is in process!")
     return;
 }
 
@@ -69,14 +73,35 @@ async function getdealId(){
 
   console.log(DealId);
   const dealStatusLink = document.getElementById("dealStatusLink");
+  const polygonScanlink = `https://calibration.filfox.info/en/deal/${DealId}`
+  toast.success(<a target="_blank" href={polygonScanlink}>Success Click to check status</a>, {
+    position: "top-right",
+    autoClose: 18000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
 
 if (dealStatusLink) {
   
-  dealStatusLink.href = `https://calibration.filfox.info/en/deal/${DealId}`;
+  
 }
 
 }
 async function verify(){
+  toast.info('Verification intiated ...', {
+    position: "top-right",
+    autoClose: 15000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
   var walletAddress = localStorage.getItem("filWalletAddress");
   await getContract(walletAddress);
   var clubs = await contractPublic.methods.getMyClubs().call()
@@ -98,33 +123,33 @@ async function verify(){
 
     const dealInfo = response1.data.dealInfo;
     const pieceCID= response1.data.pieceCID;
+    podsi1 = response1.data.pieceCID;
 
     if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
       console.error('Verification Failed');
-  
+
+    localStorage.setItem("clubverification",0);
      
       return;
   }
 
     DealId= response1.data.dealInfo[0].dealId;
 
-    
-
-    alert(DealId);
-
     console.log(pieceCID)
     console.log('Document Verified:', pieceCID);
 
     var password = $('#verifdocs').val();
     if(password ==''){
-      console.log("The password is wrong");
+     toast.error("Password is wrong!")
+
+    localStorage.setItem("clubverification",0);
       return;
     }
-    console.log(password)
     const my_wallet = await web3.eth.accounts.wallet.load(password);
 
     const query = await contractPublic.methods.verifiydocs(clubId);
     const encodedABI = query.encodeABI();
+    var hash = null;
 
     if (web3 && web3.eth) {
       try {
@@ -142,19 +167,49 @@ async function verify(){
           false,
         );
 
-        const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-        console.log('Transaction Receipt:', clubId);
+        hash = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        // console.log('Transaction Receipt:', clubId.transactionHash);
+
       } catch (error) {
+        toast.error(error);
+
+      localStorage.setItem("clubverification",0);
         console.error('Error sending signed transaction:', error);
+        const ans = localStorage.getItem("clubverification")
+        
+        return;
       }
     } else {
-      console.error('web3 instance is not properly initialized.');
-    }
-  // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-  console.log('Transaction Receipt:', clubId);
-    
+      toast.error('web3 instance is not properly initialized.');
 
-    alert("Done");
+      localStorage.setItem("clubverification",0);
+      console.error('web3 instance is not properly initialized.');
+      const ans = localStorage.getItem("clubverification")
+      
+      return;
+    }
+    const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
+    toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
+      position: "top-right",
+      autoClose: 18000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      }); 
+      const ans = localStorage.getItem("clubverification")
+      if(ans){
+        $('.clubveri').css("display","none");
+        $('.clwr').text('Verification Completed-'+podsi1);
+      }else{
+        
+        $('.clubveri').css("display","block");
+      }
+     
+    localStorage.setItem("clubverification","a");
+    localStorage.setItem("podsi",podsi1);
     return true;
 }
 
@@ -428,11 +483,19 @@ function Club() {
 
 
     useEffect(() => {
-      
         {
+          const ans  = localStorage.getItem("clubverification")
+          const pod = localStorage.getItem("podsi");
+          if(ans == "a"){
+            $('.clubveri').css("display","none");
+            $('.clwr').text('Verification Completed-'+pod);
+          }else{  
+            $('.clubveri').css("display","block");
+          }
             GetClub();verifyUserInClub();GetProposals();
         }
       }, []);
+
 
 
   return (
@@ -451,7 +514,7 @@ function Club() {
           <div className="sidebar-brand-icon rotate-n-15">
             <i className="fas fa-laugh-wink" />
           </div>
-          <div className="sidebar-brand-text mx-3">INTERNET COMPUTER CLUB</div>
+          <div className="sidebar-brand-text mx-3">DAO CLUB</div>
         </a>
         {/* Divider */}
         <hr className="sidebar-divider my-0" />
@@ -653,9 +716,10 @@ function Club() {
                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                          VERIFY YOUR DOCUMENTS (PODSI)
                         </div>
-                        <div className="h5 mb-0 font-weight-bold text-gray-800 ">
+                       
+
+                        <div className="h5 mb-0  font-weight-bold text-gray-800 ">
                           
-                        </div>
                         <input
                         type="password"
                         id="verifdocs"
@@ -666,11 +730,9 @@ function Club() {
                        
                           DOCS VERIFICATION
                           </div>
-                          
+                          </div>
                       </div>
-                      <div className="col-auto">
-                        <i className="fas fa-calendar fa-2x text-gray-300" />
-                      </div>
+                      
                     </div>
                   </div>
                 </div>
@@ -688,9 +750,9 @@ function Club() {
                         </div>
                         <div onClick={getdealId}>
                         
-                        <a id="dealStatusLink" href="#" target="__" className="btn btn-secondary btn-sm mt-2">
-    DEAL STATUS
-  </a>
+                        <div id="dealStatusLink" className="btn btn-secondary btn-sm mt-2">
+    DAO DEAL STATUS
+  </div>
                     
                           </div>
                           

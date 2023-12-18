@@ -6,6 +6,8 @@ import axios from 'axios';
 
 import Tg from '../components/toggle';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import $ from 'jquery'; 
@@ -153,6 +155,7 @@ function CreateClub() {
         $('#errorCreateClub').css("display","none");
         $('.loading_message_creating').css("display","none");
         $('#successCreateClub').css("display","block");
+        toast.success("Club created successfully with the name: " + clubName);
         $('#successCreateClub').text("Club created successfully with the name: " + clubName);
       } catch(e) {
         // alert("error")
@@ -189,7 +192,7 @@ function CreateClub() {
         <div className="sidebar-brand-icon rotate-n-15">
           <i className="fas fa-laugh-wink" />
         </div>
-        <div className="sidebar-brand-text mx-3">INTERNET COMPUTER CLUB</div>
+        <div className="sidebar-brand-text mx-3">DAO CLUB</div>
       </a>
       {/* Divider */}
       <hr className="sidebar-divider my-0" />

@@ -251,10 +251,6 @@ contract InvestmentClub {
         require(isClubIdExist(clubId), "the club does not exist");
         
         require(!isVotingOn(clubId,proposalId), "You can't before the Voting deadline");
-
-        require(policyOK(clubId,proposalId), "The for vote is less than Against");
-        
-
         ClubLibrary.Club storage club = clubs[clubId];
         require(isMemberOfClub(msg.sender, clubId), "You are not a member of the club");
         require(isProposalIdExist(proposalId, clubId), "The proposal does not exist");
@@ -263,10 +259,9 @@ contract InvestmentClub {
         ClubLibrary.Proposal storage proposal = club.proposals[proposalId];
         require(club.pool >= proposal.amount, "The amount exceeds the pool of the club");
         require(proposal.votesFor > proposal.votesAgainst, "The proposal has not been approved");
-        
         proposal.status = "Executed";
         club.pool -= proposal.amount;
-        payable(proposal.destination).transfer(uint256(proposal.amount));
+        // payable(proposal.destination).transfer(uint256(proposal.amount));
     }
 
     function closeProposal(uint256 clubId, uint256 proposalId) public {

@@ -38,8 +38,8 @@
       ]
     },
     "/home/vikash/Desktop/all_git_files/Dao-Club/Frontend/src/SmartContract/contracts/InvestmentClub.sol": {
-      "lastModificationDate": 1702589771499,
-      "contentHash": "ca6e16039ddcbd71fbe73fe72566fe9b",
+      "lastModificationDate": 1702869588253,
+      "contentHash": "58bfd647afd4e6d4c16098bf67cfbcd1",
       "sourceName": "contracts/InvestmentClub.sol",
       "solcConfig": {
         "version": "0.8.10",

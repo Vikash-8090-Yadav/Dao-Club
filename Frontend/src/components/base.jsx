@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import GetMyClubs from "../getMyClubs";
 import Login from "../pages/login";
 import Tg from "./toggle";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // import { marketplaceAddress } from "../config";
 
 import $, { error } from 'jquery'; 
@@ -19,6 +20,7 @@ var contractPublic = null;
 
 
 async function checkBalance() {
+  
   try {
     const myWallet = localStorage.getItem("filWalletAddress");
     if (!myWallet) {
@@ -50,6 +52,16 @@ function Base() {
   }
 
   async function Recieve(){
+    toast.info('Actor intiated ...', {
+      position: "top-right",
+      autoClose: 15000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
     var clubId = localStorage.getItem("clubId");
     const my_wallet = await web3.eth.accounts.wallet.load(password);
     alert(my_wallet[0].address)
@@ -93,9 +105,19 @@ function Base() {
     
       
   
-      alert("Done");
+      
       const check = localStorage.getItem("actor");
-      alert(check);
+      toast.success('Actor created sucessfully', {
+        position: "top-right",
+        autoClose: 15000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+
       if(check){
         $('.inbtn').css("display","none");
       }
@@ -160,7 +182,7 @@ function Base() {
         <div className="sidebar-brand-icon rotate-n-15">
           <i className="fas fa-laugh-wink" />
         </div>
-        <div className="sidebar-brand-text mx-3">INTERNET Computer Club</div>
+        <div className="sidebar-brand-text mx-3">DAO Club</div>
       </a>
       {/* Divider */}
       <hr className="sidebar-divider my-0" />
@@ -408,7 +430,7 @@ function Base() {
               <div className="card shadow mb-4">
                 <div className="card-header py-3">
                   <h6 className="m-0 font-weight-bold text-primary">
-                    My Principal Id
+                    My Address
                   </h6>
                 </div>
                 <div className="card-body">
@@ -422,13 +444,13 @@ function Base() {
               <div className="card shadow mb-4">
                 <div className="card-header py-3">
                   <h6 className="m-0 font-weight-bold text-primary">
-                    IC Club
+                    Dao Club
                   </h6>
                 </div>
                 <div className="card-body">
                   <p>
-                    IC CLUB is a light web wallet and Investment Club
-                    platform to manage funds (treasury) in ICP Blockchain.
+                    Dao CLUB is a light web wallet and Investment Club
+                    platform to manage funds (treasury) created upon on chain governance.
                   </p>
                 </div>
               </div>

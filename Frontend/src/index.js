@@ -1,7 +1,7 @@
 import React from "react";
 
 import { App } from "./App";
-
+import { ToastContainer } from 'react-toastify';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import ReactDOM from "react-dom";
 ReactDOM.render(
@@ -12,6 +12,7 @@ ReactDOM.render(
           </Route>
         </Routes>
       </BrowserRouter>
+      <ToastContainer/>
     </React.StrictMode>,
     document.getElementById('root')
   );

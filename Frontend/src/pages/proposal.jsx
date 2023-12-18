@@ -38,11 +38,11 @@ async function getdealId(){
   const clubId =  localStorage.getItem("clubId");
   
   var walletAddress = localStorage.getItem("filWalletAddress");
+  await getContract(walletAddress)
   
 
   var clubs = await contractPublic.methods.getProposalsByClub(clubId).call();
-  // console.log(clubs[0].CID)
-
+  console.log(clubs)
     
     const proposalId = localStorage.getItem("proposalId")
 
@@ -265,8 +265,7 @@ async function getDatainstance() {
 async function runProposal(event) {
   
   var filWalletAddress = localStorage.getItem("filWalletAddress");
-  await getContract();
-  await getDatainstance();
+  await getContract(filWalletAddress);
   if(contractPublic != undefined) {
     var option_execution = $('#option_execution').val()
     var password = $('#passwordShowPVExecution').val();
@@ -294,6 +293,10 @@ async function runProposal(event) {
       $('.successExecution').text("Running...");
       var clubId = localStorage.getItem("clubId");
       var proposalId = localStorage.getItem("proposalId");
+      var clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
+     const amnt =  (web3.utils.fromWei(clubs.amount.toString(), 'ether'));
+
+    //  console.log(clubs.amount.toString())
       
         try {
           
@@ -312,12 +315,14 @@ async function runProposal(event) {
                 maxPriorityFeePerGas: "100000000",
         to: contractPublic.options.address,
         data: encodedABI,
-                //value: amountAE 
+                value: amnt
               },
               my_wallet[0].privateKey,
               false
             );
             var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+            console.log(clubId);
+
            
           } else {
             if(option_execution == 'close') {
@@ -341,7 +346,8 @@ async function runProposal(event) {
           }
           
         } catch (error) {
-          // alert(error)
+          alert(error)
+          console.log(error)
           $('.successExecution').css("display","none");
           $('.errorExecution').css("display","block");
           $('.errorExecution').text("Error executing/closing the proposal");
@@ -510,7 +516,7 @@ function Proposal() {
         <div className="sidebar-brand-icon rotate-n-15">
           <i className="fas fa-laugh-wink" />
         </div>
-        <div className="sidebar-brand-text mx-3">INTERNET COMPUTER Club</div>
+        <div className="sidebar-brand-text mx-3">DAO CLUB</div>
       </a>
       {/* Divider */}
       <hr className="sidebar-divider my-0" />
