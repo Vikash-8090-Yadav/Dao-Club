@@ -6,6 +6,8 @@ import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import lighthouse from '@lighthouse-web3/sdk'
 import axios from 'axios';
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
@@ -23,6 +25,7 @@ async function getContract(userAddress) {
 
 
 async function Registerjob(){
+
   const formData = new FormData();
   const requestReceivedTime = new Date()
   
@@ -39,6 +42,16 @@ async function Registerjob(){
       formData
   )
   console.log(response.data)
+  toast.success('RAAS JOB Registered Sucessfully', {
+    position: "top-right",
+    autoClose: 15000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
 }
 function CreateProposal() {
 
@@ -51,6 +64,16 @@ function CreateProposal() {
 
   
   async function createProposal() {
+    toast.info('Prposal Creation intiated ...', {
+      position: "top-right",
+      autoClose: 15000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
     var walletAddress = localStorage.getItem("filWalletAddress");
     // alert(walletAddress) /// /////
     await getContract(walletAddress);
@@ -86,7 +109,7 @@ function CreateProposal() {
         $('.loading_message_creating').css("display","block");
         proposal_amount = web3.utils.toWei(proposal_amount.toString(), 'ether');
 
-        alert("Uploading to lighthouse")
+        toast.success("Proposal Uploaded to LightHouse")
         const data = JSON.stringify({
           clubId,proposal_amount, proposal_address, proposal_description,description
 
@@ -153,6 +176,8 @@ function CreateProposal() {
                 const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
                 console.log('Transaction ReccreateProposaleipt:', clubId);
               } catch (error) {
+                toast.error(error)
+                
                 console.error('Error sending signed transaction:', error);
               }
             } else {
@@ -195,15 +220,27 @@ function CreateProposal() {
         $('#errorCreateProposal').css("display","none");
         $('.loading_message_creating').css("display","none");
         $('#successCreateProposal').css("display","block");
+        toast.success('Prposal Creation Sucessfull ...', {
+          position: "top-right",
+          autoClose: 15000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          });
         $('#successCreateProposal').text("Proposal created successfully with description: " + proposal_description);
       } else {
         $('.valid-feedback').css('display','none');
         $('.loading_message_creating').css("display","none");
           $('.invalid-feedback').css('display','block');
+          toast.error('The password is invalid')
           $('.invalid-feedback').text('The password is invalid');
       }
       
     }
+   
   }
   
 
@@ -231,7 +268,7 @@ function CreateProposal() {
       <hr className="sidebar-divider my-0" />
       {/* Nav Item - Dashboard */}
       <li className="nav-item active">
-        <a className="nav-link" href="">
+        <a className="nav-link" href="/">
           <i className="fas fa-fw fa-tachometer-alt" />
           <span>Dashboard</span>
         </a>

@@ -214,7 +214,7 @@ contract InvestmentClub {
         proposal.DealId=_dealId;
         proposal.storageProvider=_storage;
     }
-    function isVotingOn(uint256 clubId,uint256 proposalId) view internal returns(bool) {
+    function isVotingOn(uint256 clubId,uint256 proposalId) view public returns(bool) {
         ClubLibrary.Proposal storage proposal = clubs[clubId].proposals[proposalId];
        return proposal.proposalExpireAt > block.timestamp;
     }

@@ -52,6 +52,16 @@ function CreateClub() {
 
 
   async function createClub() {
+    toast.info('DAO Creation intiated ...', {
+      position: "top-right",
+      autoClose: 15000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
     async function getContract(userAddress) {
       contractPublic =  new web3.eth.Contract(ABI.abi,marketplaceAddress);
       console.log(contractPublic)
@@ -62,7 +72,7 @@ function CreateClub() {
     }
 
     var walletAddress = localStorage.getItem("filWalletAddress");
-    alert(walletAddress)
+
     var password = $('#trx_password').val();
     await getContract(walletAddress);
     // alert("password showing sucessfull") //
@@ -84,7 +94,16 @@ function CreateClub() {
       
       if(my_wallet !== undefined)
       {
-        alert("Uploading to lighthouse")
+        toast.success('Uploaded to LightHouse', {
+          position: "top-right",
+          autoClose: 15000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          });
         const data = JSON.stringify({
           clubName,
 
@@ -106,23 +125,6 @@ function CreateClub() {
         await register_job(cid1);
 
 
-        // const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=cid1`)
-        
-//         const response1 = await axios.get("https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=QmRYsm6rVRDFenqjMHUoRFqhTqHUo2fbQgWkChdD5ibj2t")
-
-
-// console.log("THeres is",response1.data);
-
-
-// // alert("The deal status is");
-// const status = await axios.get("https://calibration.lighthouse.storage/api/deal_status?cid=QmRYsm6rVRDFenqjMHUoRFqhTqHUo2fbQgWkChdD5ibj2t")
-
-// console.log("The deal status is ",status.data);
-        // alert(await web3.eth.gasPrice)
-
-        // const dealStatus = await ethers.getContractAt("DealStatus", "0x01ccBC72B2f0Ac91B79Ff7D2280d79e25f745960");
-        // const st = await dealStatus.submitRaaS(ethers.utils.toUtf8Bytes("QmZfKsnm6CtRztMzKT8QhGbo4zJ1pgBNURR34Vr3awsiqP"), 2, 4, 40);
-        // console.log("st",st);
       try
       {
         
@@ -150,7 +152,7 @@ function CreateClub() {
       );
       
         var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-        alert("SUCESS")
+   
         $('#club_name').val('');
         $('#errorCreateClub').css("display","none");
         $('.loading_message_creating').css("display","none");

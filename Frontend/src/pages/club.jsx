@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
-import $ from 'jquery'; 
+import $, { error } from 'jquery'; 
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -17,7 +17,7 @@ import Tg from "../components/toggle";
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 var contractPublic = null;
 
-
+var hash = null;
 async function getContract(userAddress) {
     contractPublic = await new web3.eth.Contract(ABI.abi,marketplaceAddress);
     console.log(contractPublic)
@@ -91,7 +91,9 @@ if (dealStatusLink) {
 }
 
 }
+
 async function verify(){
+  var chk = false;
   toast.info('Verification intiated ...', {
     position: "top-right",
     autoClose: 15000,
@@ -129,6 +131,8 @@ async function verify(){
       console.error('Verification Failed');
 
     localStorage.setItem("clubverification",0);
+    toast.error("MInning is in process");
+    chk = true;
      
       return;
   }
@@ -188,7 +192,8 @@ async function verify(){
       
       return;
     }
-    const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
+    if(chk){
+      const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
     toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
       position: "top-right",
       autoClose: 18000,
@@ -207,9 +212,16 @@ async function verify(){
         
         $('.clubveri').css("display","block");
       }
+      localStorage.setItem("clubverification","a");
+      localStorage.setItem("podsi",podsi1);
+
+    }
+    else{
+
+    }
+    
      
-    localStorage.setItem("clubverification","a");
-    localStorage.setItem("podsi",podsi1);
+   
     return true;
 }
 
@@ -218,6 +230,17 @@ async function verify(){
 
 
 async function contributeClub() {
+ 
+  toast.info('Contribution intiated ...', {
+    position: "top-right",
+    autoClose: 15000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    });
   var walletAddress = localStorage.getItem("filWalletAddress");
   // alert(walletAddress) /// /////
   await getContract(walletAddress);
@@ -241,6 +264,7 @@ async function contributeClub() {
   }
   // var my_wallet = web3.eth.accounts.wallet.load(password)[0];
   const my_wallet = await web3.eth.accounts.wallet.load(password);
+ 
   
   if(my_wallet !== undefined)
   {
@@ -284,12 +308,17 @@ async function contributeClub() {
                   false,
                 );
 
-                const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+                hash = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+                
                 console.log('Transaction Receipt:', clubId);
               } catch (error) {
+
+          toast.error(error);
                 console.error('Error sending signed transaction:', error);
               }
             } else {
+
+          toast.error(error);
               console.error('web3 instance is not properly initialized.');
             }
           // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -297,6 +326,7 @@ async function contributeClub() {
           
         } catch(e) {
           console.log(e);
+          toast.error(e);
           $('.successContributeClub').css('display','none');
           $('.errorContributeClub').css("display","block");
           $('.errorContributeClub').text(e.toString());
@@ -309,12 +339,14 @@ async function contributeClub() {
     $('.errorContributeClub').css('display','none');
     $('.successContributeClub').css("display","block");
     $('.successContributeClub').text("You have contributed to the club successfully");
-    window.location.reload();
   } else {
     $('.successContributeClub').css('display','none');
     $('.errorContributeClub').css("display","block");
     $('.errorContributeClub').text("Password is invalid");
+    return;
   }
+  
+
 }
 
 async function leaveClub() {
@@ -359,12 +391,23 @@ async function leaveClub() {
     $('.errorJoinLeaveClub').css('display','none');
     $('.successJoinLeaveClub').css("display","block");
     $('.successJoinLeaveClub').text("You have left the club successfully");
-    window.location.reload();
   } else {
     $('.successJoinLeaveClub').css('display','none');
     $('.errorJoinLeaveClub').css("display","block");
     $('.errorJoinLeaveClub').text("Password is invalid");
+    return;
   }
+  const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
+  toast.success("Removed from Dao" ,{
+    position: "top-right",
+    autoClose: 18000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "dark",
+    }); 
 }
 
 
@@ -473,7 +516,6 @@ function Club() {
       $('.successJoinLeaveClub').text("You have joined the club successfully");
       window.location.reload()
     } else {
-      alert(my_wallet)
       $('.successJoinLeaveClub').css('display','none');
       $('.errorJoinLeaveClub').css("display","block");
       $('.errorJoinLeaveClub').text("Password is invalid");

@@ -58,7 +58,7 @@ function saveWallet() {
     <div className="card-body p-0">
       {/* Nested Row within Card Body */}
       <div className="row">
-        <div className="col-lg-5 d-none d-lg-block bg-register-image" />
+        <div className="col-lg-5 d-none d-lg-block " />
         <div className="col-lg-7">
           <div className="p-5">
             <div className="text-center">

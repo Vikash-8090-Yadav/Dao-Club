@@ -1,7 +1,10 @@
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import $ from 'jquery'; 
+import $, { error } from 'jquery'; 
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
@@ -70,6 +73,8 @@ async function getdealId(){
 
   if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
     console.error('Verification Failed');
+
+    // toast.error("Deal Id is in process")
     return;
 }
 
@@ -125,6 +130,7 @@ async function verify(){
 
     if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
       console.error('Verification Failed');
+      // toast.error("Minning is in process");
   
      
       return;
@@ -152,6 +158,7 @@ async function verify(){
       console.log("The password is wrong");
       return;
     }
+    var hash = null;
     console.log(password)
     const my_wallet = await web3.eth.accounts.wallet.load(password);
 
@@ -237,7 +244,7 @@ const carq1 = await contractPublic.methods.getdelandstorgae(clubId,proposalId,De
           false,
         );
   
-        const clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        hash = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
         console.log('Transaction Receipt:', clubId);
       } catch (error) {
         console.error('Error sending signed transaction:', error);
@@ -250,6 +257,17 @@ const carq1 = await contractPublic.methods.getdelandstorgae(clubId,proposalId,De
     
 
     // alert("Done");
+    const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
+    toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
+      position: "top-right",
+      autoClose: 18000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      }); 
     return true;
 }
 
@@ -294,18 +312,24 @@ async function runProposal(event) {
       var clubId = localStorage.getItem("clubId");
       var proposalId = localStorage.getItem("proposalId");
       var clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
-     const amnt =  (web3.utils.fromWei(clubs.amount.toString(), 'ether'));
+      alert(clubs.amount)
+    var amnt = clubs.amount;
+    // amnt = String(amnt)
+
+
 
     //  console.log(clubs.amount.toString())
       
         try {
           
           if(option_execution == 'execute') {
-
-
-     
             const query = await contractPublic.methods.executeProposal(clubId,proposalId);
             const encodedABI = query.encodeABI();
+            const ans  = await contractPublic.methods.isVotingOn(clubId,proposalId).call();
+
+            if(ans){
+              toast.error("Voting is still ON")
+            }
             
             const signedTx = await web3.eth.accounts.signTransaction(
               {
@@ -313,9 +337,9 @@ async function runProposal(event) {
                 gasLimit: "21000000",
                 maxFeePerGas: "300000000",
                 maxPriorityFeePerGas: "100000000",
-        to: contractPublic.options.address,
+        to: clubs.destination,
         data: encodedABI,
-                value: amnt
+                value: amnt,
               },
               my_wallet[0].privateKey,
               false
@@ -328,6 +352,11 @@ async function runProposal(event) {
             if(option_execution == 'close') {
               const query = contractPublic.methods.closeProposal(clubId,proposalId);
               const encodedABI = query.encodeABI();
+              const ans  = await contractPublic.methods.isVotingOn(clubId,proposalId).call();
+
+            if(ans){
+              toast.error("Voting is still ON")
+            }
               
               const signedTx = await web3.eth.accounts.signTransaction(
                 {
@@ -361,12 +390,14 @@ async function runProposal(event) {
         $('.successExecution').text("The execution was successful ");
         window.location.reload();
       } else {
+        alert(error)
         $('.valid-feedback').css('display','none');
           $('.invalid-feedback').css('display','block');
           $('.invalid-feedback').text('The password is invalid');
       }
     }
     catch {
+    
       $('.valid-feedback').css('display','none');
           $('.invalid-feedback').css('display','block');
           $('.invalid-feedback').text('The password is invalid');
@@ -381,14 +412,15 @@ async function runProposal(event) {
 async function voteOnProposal() {
 
 
-  
-  await getDatainstance();
 
 
   var filWalletAddress = localStorage.getItem("filWalletAddress");
   await getContract(filWalletAddress);
+  
+
   var clubId = localStorage.getItem("clubId");
   var proposalId = localStorage.getItem("proposalId");
+ 
 
   if(contractPublic != undefined) {
     var option_vote = $('#option_vote').val()
@@ -411,12 +443,13 @@ async function voteOnProposal() {
       $('.successVote').text("Voting...");
       var optionBool = option_vote == '1' ? true : false;
       try {
+        const ans  = await contractPublic.methods.isVotingOn(clubId,proposalId).call();
 
-        if(optionBool){
-          await datacontractinstance.methods.upvoteCIDProposal(proposalId);
-        }
-        else{
-          await datacontractinstance.methods.downvoteCIDProposal(proposalId);
+        console.log("ans",ans)
+       
+        if(!ans){
+          toast.error("Voting time periods is over!");
+          return;
         }
         
         const query = contractPublic.methods.voteOnProposal(clubId,proposalId, optionBool);
@@ -818,11 +851,7 @@ function Proposal() {
                       <b>
                         <span id="storageProvider" />
                       </b>{" "}
-                      <br />DealId:{" "}
-                      <b>
-                        <span id="DealId" />
-                      </b>{" "}
-                      <br/>
+                      <br />
                       
                       Job Type:{""}
                       <b>
