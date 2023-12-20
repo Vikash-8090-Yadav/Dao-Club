@@ -1,10 +1,10 @@
 #  This project is made under PUSH BEB Hackathon
 
-![Screenshot from 2023-11-12 23-50-21](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/6b94e8bb-872c-47f5-b41b-0bee8c86fa32)
 
-# Internet Computer Club (IC-CLUB)
 
-IC CLUB allows you to manage investment clubs, and to spread access to participate in investment funds to anyone, decentralized, agile, and without bureaucracy
+# Data Dao Club
+
+Dao Club allows you to manage investment clubs, and to spread access to participate in investment funds to anyone, decentralized, agile, and without bureaucracy
 
 <br>
 
@@ -41,35 +41,52 @@ In this future, IC CLUB stands as a beacon of decentralization, embracing the po
 
 # What it does
 
-## Create Investment Clubs
+## Create Data Dao Investment Clubs
 
 - Users can easily create investment clubs by providing a club name.
 - The club becomes associated with the account of the user who creates it (owner).
-- ![Screenshot](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/d95d370c-9643-4d2e-a510-c83b87c6ae23)
+![Screenshot from 2023-12-21 04-37-17](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/f799ed27-e9dd-4d82-82b1-fa7ac920b316)
 
-## Join or Leave Clubs
 
-- Anyone with an ICP (Internet Computer Protocol) blockchain account can join available investment clubs or leave them with a few clicks.
-
-## Contribute to the Club
-
-- Members can contribute to the common fund (pool) by depositing ICP coins.
+## Join or Leave and Contribute to the Club 
+- Data Dao Members can contribute to the common fund (pool) by depositing ICP coins.
 - Contributions can be utilized in proposals.
-- ![Screenshot](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/06d92ac4-c79c-4097-a165-6cfda34ad088)
+  
+![Screenshot from 2023-12-21 04-43-03](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/2c82dbc3-071a-4e05-adbe-53d752f556f3)
+
+
+Transaction after contribution 
+![Screenshot from 2023-12-21 04-43-54](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/98adfc21-9129-4748-9781-b2a67cb9c227)
 
 ## Create and Vote on Proposals
 
 - Members who contribute funds to the club pool can create proposals.
 - Proposals include a description, amount (not exceeding the pool amount), and recipient for potential investments.
 - All members can approve or reject proposals with one vote per member on each proposal.
-- ![Screenshot](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/83b06e1b-8c91-4144-a9da-2b53aa45df68)
+  
+- ![Screenshot from 2023-12-21 04-44-34](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/4b97a1a9-a529-4fe1-a37d-302f33e47fc6)
 
-## Run Proposals
+
+## Execute and Close proposal
 
 - Proposal owners, with greater approval than rejection, can execute proposals.
+- Can't execute in voting periods which last for 5 min after creation. 
 - This action transfers the proposal amount to the specified recipient.
 - Owners can also close proposals for various reasons, such as cancellation or to avoid sending funds.
+- 
 - ![Screenshot](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/4ca59e4e-5725-45d3-80cd-506e93a35b24)
+
+## PODSI Verification
+
+## Upload on LightHouse
+
+## RAAS JOB
+- Data Dao member can only register for JOb to create proposal and Vote on them
+  
+- ![Screenshot from 2023-12-21 04-47-20](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/488d2d61-5cd7-4b8f-8786-fd2234cc336f)
+
+
+## Deal and storage status
 
 ## 🔍The problem it solves
 
