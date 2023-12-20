@@ -123,7 +123,7 @@ function CreateProposal() {
           add_mock_data: 2
         };
 
-        const response = await lighthouse.uploadText(data, apiKey,dealParams, proposal_description)
+        const response = await lighthouse.uploadText(data, apiKey, proposal_description)
 
         console.log("The cid is ",response.data.Hash);
 

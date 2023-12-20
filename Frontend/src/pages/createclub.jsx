@@ -117,7 +117,7 @@ function CreateClub() {
           add_mock_data: 2
         };
 
-        const response = await lighthouse.uploadText(data, apiKey,dealParams, clubName)
+        const response = await lighthouse.uploadText(data, apiKey, clubName)
 
         console.log("The cid is ",response.data.Hash);
 
