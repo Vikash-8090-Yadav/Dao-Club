@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import $, { error } from 'jquery'; 
+import { useNavigate } from 'react-router-dom';
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -309,6 +310,17 @@ async function contributeClub() {
                 );
 
                 hash = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+                const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
+            toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
+              position: "top-right",
+              autoClose: 18000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              });
                 
                 console.log('Transaction Receipt:', clubId);
               } catch (error) {
@@ -386,6 +398,17 @@ async function leaveClub() {
           false
         );
         var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        const polygonScanlink = `https://calibration.filfox.info/en/tx/${clubId.transactionHash}`
+            toast.success(<a target="_blank" href={polygonScanlink}>Removed from Club, Click to view transaction</a>, {
+              position: "top-right",
+              autoClose: 18000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              });
         }
       }
     $('.errorJoinLeaveClub').css('display','none');
@@ -397,17 +420,6 @@ async function leaveClub() {
     $('.errorJoinLeaveClub').text("Password is invalid");
     return;
   }
-  const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
-  toast.success("Removed from Dao" ,{
-    position: "top-right",
-    autoClose: 18000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    }); 
 }
 
 
@@ -537,6 +549,15 @@ function Club() {
             GetClub();verifyUserInClub();GetProposals();
         }
       }, []);
+
+
+      const navigate = useNavigate();
+  function Logout(){
+    web3.eth.accounts.wallet.clear();
+    localStorage.clear();
+    navigate('/login');
+  
+  }
 
 
 
@@ -694,7 +715,7 @@ function Club() {
                     <div className="row no-gutters align-items-center">
                       <div className="col mr-2">
                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                          Club Balance (CYCLE)
+                          Club Balance (calibration)
                         </div>
                         <div className="h5 mb-0 font-weight-bold text-gray-800 club_balance">
                           -
@@ -877,7 +898,7 @@ function Club() {
                   </div>
                   <div className="card-body">
                     <p>
-                      Amount of CELO: <br />
+                      Amount of calibration: <br />
                       <input
                         type="number"
                         id="aeAmount"
@@ -1043,9 +1064,9 @@ function Club() {
             >
               Cancel
             </button>
-            <a className="btn btn-primary"  onClick={''}  id="btnLogout">
-              Logout
-            </a>
+            <div className="btn btn-primary" onClick={Logout} id="btnLogout">
+            Logout
+          </div>
           </div>
         </div>
       </div>

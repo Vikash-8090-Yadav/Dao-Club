@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
 import lighthouse from '@lighthouse-web3/sdk'
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 import Tg from '../components/toggle';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -176,6 +176,14 @@ function CreateClub() {
       }
   }
 
+  const navigate = useNavigate();
+  function Logout(){
+    web3.eth.accounts.wallet.clear();
+    localStorage.clear();
+    navigate('/login');
+  
+  }
+
   
 
   return (
@@ -332,7 +340,7 @@ function CreateClub() {
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Balance (CYCLE)
+                        Balance (calibration)
                       </div>
                       <div className="h5 mb-0 font-weight-bold text-gray-800 view_balance_address">
                         -
@@ -545,9 +553,9 @@ function CreateClub() {
           >
             Cancel
           </button>
-          <a className="btn btn-primary" id="btnLogout">
+          <div className="btn btn-primary" onClick={Logout} id="btnLogout">
             Logout
-          </a>
+          </div>
         </div>
       </div>
     </div>

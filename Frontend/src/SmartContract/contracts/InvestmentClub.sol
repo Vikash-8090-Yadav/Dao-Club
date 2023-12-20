@@ -248,20 +248,18 @@ contract InvestmentClub {
     }
 
     function executeProposal(uint256 clubId, uint256 proposalId) public payable {
-        require(isClubIdExist(clubId), "the club does not exist");
-        
-        require(!isVotingOn(clubId,proposalId), "You can't before the Voting deadline");
         ClubLibrary.Club storage club = clubs[clubId];
+        ClubLibrary.Proposal storage proposal = club.proposals[proposalId];
+        require(isClubIdExist(clubId), "the club does not exist");
         require(isMemberOfClub(msg.sender, clubId), "You are not a member of the club");
         require(isProposalIdExist(proposalId, clubId), "The proposal does not exist");
         require(isValidExecutor(clubId, proposalId), "Only the creator of the proposal can execute it");
-        
-        ClubLibrary.Proposal storage proposal = club.proposals[proposalId];
         require(club.pool >= proposal.amount, "The amount exceeds the pool of the club");
         require(proposal.votesFor > proposal.votesAgainst, "The proposal has not been approved");
+        require(!isVotingOn(clubId,proposalId), "You can't before the Voting deadline");
         proposal.status = "Executed";
         club.pool -= proposal.amount;
-        // payable(proposal.destination).transfer(uint256(proposal.amount));
+        payable(proposal.destination).transfer(uint256(proposal.amount));
     }
 
     function closeProposal(uint256 clubId, uint256 proposalId) public {

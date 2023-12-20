@@ -34,8 +34,6 @@ function saveWallet() {
     var address = $('#filAccount').text();
     var secret = $('#filPrivateKey').text();
     var password = $('#passwordRegisterAccount').val();
-
-    alert(password)
     //var encryptedAddress = CryptoJS.AES.encrypt(address, password);
     web3.eth.accounts.wallet.clear();
     web3.eth.accounts.wallet.add(secret);
@@ -58,18 +56,19 @@ function saveWallet() {
     <div className="card-body p-0">
       {/* Nested Row within Card Body */}
       <div className="row">
-        <div className="col-lg-5 d-none d-lg-block " />
+        <div className="col-lg-5 d-none d-lg-block bg-register-image" />
         <div className="col-lg-7">
           <div className="p-5">
             <div className="text-center">
-              <h1 className="h4 text-gray-900 mb-4">SpheronClub - Create an Account!</h1>
+              <h1 className="h4 text-gray-900 mb-4">Dao Club - Create an Account!</h1>
             </div>
             <div className="text-center">
-              SpheronClub is a light web wallet and platform that allows you to: 
+              Dao Club is a light web wallet and platform that allows you to: 
               <ul>
                 <li><b>Create investment clubs.</b></li> 
                 <li><b>Join and contribute to investment clubs.</b></li> 
-                <li><b>Create, vote, and execute proposals.</b></li> 
+                <li><b>Create, vote, and execute proposals. on Chain</b></li> 
+                <li><b>Verify data (PODSI), Deal status, storage status, Register for Job</b></li> 
               </ul>
             </div>
             <form className="user">
@@ -88,7 +87,7 @@ function saveWallet() {
                   Private Key: <b><span id="filPrivateKey" /></b> <br />
                 </div>
                 <div className="col-sm-12 mb-6 mb-sm-0">
-                  Request some CELO from the faucet: <a href="https://faucet.celo.org/alfajores" target="_blank" className="btn btn-success btn-user btn-block">Faucet</a>
+                  Request some calibration from the faucet: <a href="https://faucet.calibration.fildev.network/funds.html" target="_blank" className="btn btn-success btn-user btn-block">Faucet</a>
                 </div>
                 <div className="col-sm-12 mb-6 mb-sm-0">
                   Create a password for your wallet: 

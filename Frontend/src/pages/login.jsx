@@ -58,20 +58,20 @@ navigate('/');
         <div className="card-body p-0">
           {/* Nested Row within Card Body */}
           <div className="row">
-            <div className="col-lg-6 d-none d-lg-block " />
+            <div className="col-lg-6 d-none d-lg-block bg-login-image " />
             <div className="col-lg-6">
               <div className="p-5">
                 <div className="text-center">
-                  <h1 className="h4 text-gray-900 mb-4">SpheronClub - Welcome Back!</h1>
+                  <h1 className="h4 text-gray-900 mb-4">Dao Club - Welcome Back!</h1>
                 </div>
                 <form className="user">
                   <div className="form-group">
                     <input type="password" className="form-control form-control-user" id="pvKeyValue" aria-describedby="emailHelp" placeholder="Enter your private key" />
                     <input type="password" className="form-control form-control-user" id="pvKeyNewPasswordValue" aria-describedby="emailHelp" placeholder="Enter a new password" />
                   </div>
-                  <a id="generateWalletPrivKeyButton" className="btn btn-primary btn-user btn-block">
+                  <div id="generateWalletPrivKeyButton" onClick={generateWalletFromPrivateKey} className="btn btn-primary btn-user btn-block">
                     Login with your private key
-                  </a>
+                  </div>
                   <p className="invalid-feedback" id="errorLogin" />
                   <hr />
                 </form>

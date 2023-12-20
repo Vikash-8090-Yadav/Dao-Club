@@ -5,7 +5,7 @@ import $ from 'jquery';
 import { marketplaceAddress } from "../config";
 import {Web3} from 'web3';
 import ABI from "../SmartContract/artifacts/contracts/InvestmentClub.sol/InvestmentClub.json"
-
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import lighthouse from '@lighthouse-web3/sdk'
@@ -242,6 +242,14 @@ function CreateProposal() {
     }
    
   }
+
+  const navigate = useNavigate();
+  function Logout(){
+    web3.eth.accounts.wallet.clear();
+    localStorage.clear();
+    navigate('/login');
+  
+  }
   
 
 
@@ -397,7 +405,7 @@ function CreateProposal() {
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Club Balance (CYCLE)
+                        Club Balance (calibration)
                       </div>
                       <div className="h5 mb-0 font-weight-bold text-gray-800 club_balance">
                         -
@@ -492,10 +500,10 @@ function CreateProposal() {
                         className="form-control form-control-user"
                         value={destination}
 onChange={(e) => setDestination(e.target.value)}
-                        placeholder="Enter the Celo destination address: 0x....."
+                        placeholder="Enter the calibration destination address: 0x....."
                       />{" "}
                       <br />
-                      Amount (in CYCLE):{" "}
+                      Amount (in calibration):{" "}
                       <input
                         type="number"
                         id="proposal_amount"
@@ -655,9 +663,9 @@ onChange={(e) => setDestination(e.target.value)}
           >
             Cancel
           </button>
-          <a className="btn btn-primary"  onClick={''} id="btnLogout">
+          <div className="btn btn-primary" onClick={Logout} id="btnLogout">
             Logout
-          </a>
+          </div>
         </div>
       </div>
     </div>

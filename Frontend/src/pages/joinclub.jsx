@@ -3,10 +3,20 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import GetClubs from '../getClubs';
 import Tg from "../components/toggle";
 import $ from 'jquery'; 
+import { useNavigate } from 'react-router-dom';
+import {Web3} from 'web3';
 
 
+const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 
 function JoinClub() {
+  const navigate = useNavigate();
+  function Logout(){
+    web3.eth.accounts.wallet.clear();
+    localStorage.clear();
+    navigate('/login');
+  
+  }
  
   
 
@@ -126,7 +136,7 @@ function JoinClub() {
                     <div className="row no-gutters align-items-center">
                       <div className="col mr-2">
                         <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                          Balance (CYCLE)</div>
+                          Balance (calibration)</div>
                         <div className="h5 mb-0 font-weight-bold text-gray-800 view_balance_address">0</div>
                       </div>
                       <div className="col-auto">
@@ -227,7 +237,9 @@ function JoinClub() {
           <div className="modal-body">Select "Logout" below if you are ready to end your current session in this browser.</div>
           <div className="modal-footer">
             <button className="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a className="btn btn-primary"  id="btnLogout">Logout</a>
+            <div className="btn btn-primary" onClick={Logout} id="btnLogout">
+            Logout
+          </div>
           </div>
         </div>
       </div>

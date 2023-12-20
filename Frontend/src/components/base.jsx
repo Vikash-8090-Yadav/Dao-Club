@@ -64,8 +64,6 @@ function Base() {
       });
     var clubId = localStorage.getItem("clubId");
     const my_wallet = await web3.eth.accounts.wallet.load(password);
-    alert(my_wallet[0].address)
-    localStorage.setItem("actor",1);
       if (web3 && web3.eth) {
         try {
           const weiAmount = web3.utils.toWei("1", "ether");
@@ -86,17 +84,26 @@ function Base() {
             false,
           );
         
-          const transaction = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-          console.log('Transaction Receipt:', transaction);
+          const Hash = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+          const polygonScanlink = `https://calibration.filfox.info/en/tx/${Hash.transactionHash}`
+          toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
+            position: "top-right",
+            autoClose: 18000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            });
+            localStorage.setItem("actor",'a');
         } catch (error) {
           localStorage.setItem("actor",0);
-          alert(error)
           console.error('Error sending signed transaction:', error);
         }
         
       } else {
         localStorage.setItem("actor",0);
-        alert(error)
         console.error('web3 instance is not properly initialized.');
       }
     // var clubId = await this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -107,18 +114,9 @@ function Base() {
   
       
       const check = localStorage.getItem("actor");
-      toast.success('Actor created sucessfully', {
-        position: "top-right",
-        autoClose: 15000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        });
+      
 
-      if(check){
+      if(check =='a'){
         $('.inbtn').css("display","none");
       }
       return true;
@@ -133,7 +131,7 @@ function Base() {
     {
       const check = localStorage.getItem("actor");
       
-      if(check){
+      if(check=='a'){
         $('.inbtn').css("display","none");
         $('.actwr').text('Actor Created  :  EVM');
       
@@ -319,7 +317,7 @@ function Base() {
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Balance (CYCLE)
+                        Balance (calibration)
                       </div>
                       <div className="h5 mb-0 font-weight-bold text-gray-800 view_balance_address">
                         -
@@ -547,9 +545,9 @@ function Base() {
           >
             Cancel
           </button>
-          <a className="btn btn-primary" href="/login" id="btnLogout">
+          <div className="btn btn-primary" onClick={Logout} id="btnLogout">
             Logout
-          </a>
+          </div>
         </div>
       </div>
     </div>

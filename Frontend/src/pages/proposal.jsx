@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import $, { error } from 'jquery'; 
-
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -18,7 +18,7 @@ import getProposalById from '../getProposalById';
 import GetClub from '../getclub';
 import Tg from "../components/toggle";
 
-
+const ethers = require("ethers")
 const DataDaoAddress  = "0x8138489b863a68f224307a5D0Fa630917d848e25"
 const web3 = new Web3(new Web3.providers.HttpProvider("https://api.calibration.node.glif.io/rpc/v1"));
 
@@ -74,7 +74,7 @@ async function getdealId(){
   if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
     console.error('Verification Failed');
 
-    // toast.error("Deal Id is in process")
+    toast.error("Deal Id is in process")
     return;
 }
 
@@ -130,7 +130,7 @@ async function verify(){
 
     if (!pieceCID || !dealInfo || dealInfo.length === 0 || !dealInfo.every(deal => deal.dealId && deal.storageProvider)) {
       console.error('Verification Failed');
-      // toast.error("Minning is in process");
+      toast.error("Minning is in process");
   
      
       return;
@@ -273,17 +273,11 @@ const carq1 = await contractPublic.methods.getdelandstorgae(clubId,proposalId,De
 
 
 
-async function getDatainstance() {
-  datacontractinstance = await new web3.eth.Contract(DataAbi.abi,DataDaoAddress);
-  console.log(datacontractinstance)
- 
-}
-
 
 async function runProposal(event) {
   
   var filWalletAddress = localStorage.getItem("filWalletAddress");
-  await getContract(filWalletAddress);
+  await getContract();
   if(contractPublic != undefined) {
     var option_execution = $('#option_execution').val()
     var password = $('#passwordShowPVExecution').val();
@@ -311,25 +305,18 @@ async function runProposal(event) {
       $('.successExecution').text("Running...");
       var clubId = localStorage.getItem("clubId");
       var proposalId = localStorage.getItem("proposalId");
-      var clubs = await contractPublic.methods.getProposalById(clubId, proposalId).call();
-      alert(clubs.amount)
-    var amnt = clubs.amount;
-    // amnt = String(amnt)
-
-
-
-    //  console.log(clubs.amount.toString())
       
         try {
+          const ans  = await contractPublic.methods.isVotingOn(clubId,proposalId).call();
+
+          if(ans){
+            toast.error("Voting is still ON")
+          }
           
           if(option_execution == 'execute') {
             const query = await contractPublic.methods.executeProposal(clubId,proposalId);
             const encodedABI = query.encodeABI();
-            const ans  = await contractPublic.methods.isVotingOn(clubId,proposalId).call();
-
-            if(ans){
-              toast.error("Voting is still ON")
-            }
+            
             
             const signedTx = await web3.eth.accounts.signTransaction(
               {
@@ -337,14 +324,24 @@ async function runProposal(event) {
                 gasLimit: "21000000",
                 maxFeePerGas: "300000000",
                 maxPriorityFeePerGas: "100000000",
-        to: clubs.destination,
+        to: contractPublic.options.address,
         data: encodedABI,
-                value: amnt,
               },
               my_wallet[0].privateKey,
               false
             );
             var clubId = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+            const polygonScanlink = `https://calibration.filfox.info/en/tx/${clubId.transactionHash}`
+            toast.success(<a target="_blank" href={polygonScanlink}>Transaction Completed, Click to view transaction</a>, {
+              position: "top-right",
+              autoClose: 18000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              }); 
             console.log(clubId);
 
            
@@ -375,7 +372,8 @@ async function runProposal(event) {
           }
           
         } catch (error) {
-          alert(error)
+          // alert(error)
+          toast.error(error)
           console.log(error)
           $('.successExecution').css("display","none");
           $('.errorExecution').css("display","block");
@@ -390,7 +388,8 @@ async function runProposal(event) {
         $('.successExecution').text("The execution was successful ");
         window.location.reload();
       } else {
-        alert(error)
+        // alert(error)
+        toast.error(error)
         $('.valid-feedback').css('display','none');
           $('.invalid-feedback').css('display','block');
           $('.invalid-feedback').text('The password is invalid');
@@ -406,8 +405,6 @@ async function runProposal(event) {
     
   }
 }
-
-
 
 async function voteOnProposal() {
 
@@ -520,6 +517,13 @@ async function verifyUserInClub() {
 
 function Proposal() {
 
+  const navigate = useNavigate();
+  function Logout(){
+    web3.eth.accounts.wallet.clear();
+    localStorage.clear();
+    navigate('/login');
+  
+  }
 
 
     useEffect(() => {
@@ -687,7 +691,7 @@ function Proposal() {
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Club Balance (CYCLE)
+                        Club Balance (calibration)
                       </div>
                       <div className="h5 mb-0 font-weight-bold text-gray-800 club_balance">
                         -
@@ -786,7 +790,7 @@ function Proposal() {
                       <div id = "dealst" className="h5 mb-0 font-weight-bold text-gray-800 ">
                         -
                       </div>
-                      <a id="dealStatusLink" href="#" target="__" >
+                      <a id="dealStatusLink" href="#" >
 
                       <div
                         className="btn btn-secondary btn-sm mt-2"
@@ -834,7 +838,7 @@ function Proposal() {
                         <span id="proposal_destination" />
                       </b>{" "}
                       <br />
-                      Amount (in CYCLE):{" "}
+                      Amount (in calibration):{" "}
                       <b>
                         <span id="proposal_amount" />
                       </b>{" "}
@@ -855,7 +859,7 @@ function Proposal() {
                       
                       Job Type:{""}
                       <b>
-                        <span id="DealId" /> ALL
+                        <span id="DealI" /> ALL
                       </b>{""}
                       <br />
                       Voting perios Starts At:{""}
@@ -1066,9 +1070,9 @@ function Proposal() {
           >
             Cancel
           </button>
-          <a className="btn btn-primary" onClick={''} id="btnLogout">
+          <div className="btn btn-primary" onClick={Logout} id="btnLogout">
             Logout
-          </a>
+          </div>
         </div>
       </div>
     </div>

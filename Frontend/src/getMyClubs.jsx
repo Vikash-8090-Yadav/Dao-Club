@@ -23,7 +23,6 @@ var contractPublic = null;
 async function GetMyClubs() {
 
   function changeClub(clubId){
-    alert(clubId);
     localStorage.setItem('clubId', clubId);
     window.location.href = '/club';
 
