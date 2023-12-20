@@ -86,6 +86,9 @@ Transaction after contribution
 ## PODSI Verification
 
 ## Upload on LightHouse
+- All the dataset is being uploaded and managed by LightHouse only
+- ![Screenshot from 2023-12-21 05-06-16](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/d330d508-a6ad-47fe-949e-f1251048f3a5)
+
 
 ## RAAS JOB
 - Data Dao member can only register for JOb to create proposal and Vote on them
