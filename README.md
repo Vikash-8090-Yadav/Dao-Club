@@ -17,7 +17,6 @@ Dao Club allows you to manage investment clubs, and to spread access to particip
 - [Installation](#-setting-up-the-project-locally)
 - [The problem it solves](#the-problem-it-solves)
 - [Challenges we ran into](#-challenges-we-ran-into)
-- [Project Gallery](#Project-Gallery)
 - [Technologies we used](#%EF%B8%8Ftechnologies-we-used)
 - [Video Demo](#-video-demo)
 - [Contributing](#-contributing)
@@ -134,7 +133,7 @@ Transaction after contribution
 - https://calibration.filfox.info/en/deal/165238
   ![Screenshot from 2023-12-21 05-29-34](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/6447a4f5-75fa-4374-bd3f-0bc051894621)
 
-- Proposal Deal ans storage status
+- Proposal Deal and storage status
   
 - Deal status
   ![Screenshot from 2023-12-21 06-34-15](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/835d1b5a-bcc5-43a4-87db-e2362eb0e5fc)
@@ -154,9 +153,14 @@ With the Filecoin Virtual Machine (FVM) now live on the Filecoin mainnet, a new 
 
 ## 💥 Challenges we ran into
 
-**MOTOKO:**
-- Building scalable smart contracts is a challenging task that requires hard work and dedication. Despite the difficulties, I was able to make it happen. Our main challenge was to make the contract dynamic and responsive to all users. For instance, if a user adds a course, it should only be visible on their dashboard, not to everyone who logs in to the DApp.
+**LightHouse:**
+-I am new to LightHouse and understanding RAAS, and PODSI is quite interesting and  difficult too. This led to several issues/errors which were solved with the help of amazing community support of Filecoin and Lighthouse
+- Gets lots of  errors in Storage provider incentives, Deal status, storage  this time the issue is with my local internet   took me 4 hours to understand this.
 
+  **FVM**
+  - Understanding the  DATA DAO is not as easy as the short name is,  I Faced an issue  in deploying the address, and integrating hardhat with FVM but again due to the amazing community I solved the issue
+  - If I log in with the  very new transaction wallet with no previous history then am get one gas error which is coming due to the new  account and it's again solved by the community as I have to create the ACTOR first by doing any  transaction.
+    
 <br>
 
 <a href = "#top">Back to top</a>
