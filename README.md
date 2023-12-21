@@ -37,7 +37,34 @@ At IC CLUB, we envision a future where investment management is seamlessly woven
 
 In this future, IC CLUB stands as a beacon of decentralization, embracing the power of blockchain technology to forge a new era in investment management. We see a world where users have direct control over their financial endeavors, free from the constraints of bureaucracy and intermediaries. The platform is designed to be agile, responsive, and tailored to the needs of those who seek a more transparent, secure, and efficient investment experience.
 
+## Smart Contract deployed on calibration testnet
+- Smart contract Address - 0xAb873F3E802392E5Eb105e06AF38b28628e1dd76
+- https://calibration.filfox.info/en/address/0xAb873F3E802392E5Eb105e06AF38b28628e1dd76
+- ![Screenshot from 2023-12-21 05-33-38](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/a3600960-95b6-476d-95f6-dc11eed8ca76)
 
+# Proof of critical usage of Filecoin Virtual Machine:
+
+Implementing a comprehensive on-chain governance system allows DataDAO members to create and vote on proposals, covering aspects such as member management, dataset storage and distribution, and token distribution. This ensures a democratic and transparent decision-making process within the DAO.
+
+## Economic Model for Dataset Value Generation:
+
+We've designed a dynamic economic model that enables DataDAO members to generate value from the datasets they manage. This includes mechanisms for monetizing datasets and ensuring fair token distribution among contributors.
+
+
+## Filecoin Storage Deal Aggregator:
+
+Our project utilizes the Filecoin network for decentralized and secure storage of datasets. We integrate the Lighthouse aggregator/SDK to facilitate seamless storage deals, providing DataDAO members with efficient tools to manage their datasets.
+
+## Proof of Data Storage Inclusion (PoDSI):
+
+We incorporate methodologies for receiving, recording, and verifying storage deal inclusion proofs (PoDSI). This cryptographic proof ensures the integrity and authenticity of stored datasets, adding trust and reliability to the entire system.
+
+## Job Registration for Dataset Health:
+
+DataDAO members can register Replication as a Service (RaaS) jobs with Lighthouse to guarantee the health of their datasets. This includes functionalities for replications, renewals, and repairs, ensuring the longevity and availability of stored data.
+
+## Incentivizing Filecoin Storage Providers:
+The FVM is instrumental in cryptographically proving the value and utility of datasets stored by the DataDAO. This proof is crucial for objectively expressing and transacting the value of data within markets. By leveraging the FVM, our project creates a secure and verifiable environment that incentivizes Filecoin Storage Providers to actively participate in storing and serving datasets.
 
 # What it does
 
@@ -64,7 +91,7 @@ Transaction after contribution
 - Proposals include a description, amount (not exceeding the pool amount), and recipient for potential investments.
 - All members can approve or reject proposals with one vote per member on each proposal.
   
-- ![Screenshot from 2023-12-21 04-44-34](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/4b97a1a9-a529-4fe1-a37d-302f33e47fc6)
+ ![Screenshot from 2023-12-21 04-44-34](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/4b97a1a9-a529-4fe1-a37d-302f33e47fc6)
 
 
 ## Execute and Close proposal
@@ -84,20 +111,40 @@ Transaction after contribution
 
 
 ## PODSI Verification
+![Screenshot from 2023-12-21 06-36-15](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/6fa9b192-97a5-46ce-9d86-5c2cfbacf9b5)
+
 
 ## Upload on LightHouse
 - All the dataset is being uploaded and managed by LightHouse only
-- ![Screenshot from 2023-12-21 05-06-16](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/d330d508-a6ad-47fe-949e-f1251048f3a5)
+ ![Screenshot from 2023-12-21 05-06-16](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/d330d508-a6ad-47fe-949e-f1251048f3a5)
 
 
 ## RAAS JOB
 - Data Dao member can only register for JOb to create proposal and Vote on them
+- Mmeber can renew and replicate their dataset again/ automatically when they expire
   
-- ![Screenshot from 2023-12-21 04-47-20](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/488d2d61-5cd7-4b8f-8786-fd2234cc336f)
+ ![Screenshot from 2023-12-21 04-47-20](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/488d2d61-5cd7-4b8f-8786-fd2234cc336f)
 
 
 ## Deal and storage status
+- Member can check the deal and storage status 
 
+![Screenshot from 2023-12-21 05-18-13](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/c15cdf0f-5682-4fac-9cb8-33c28cc253ca)
+
+- Data Dao club Deal status
+- https://calibration.filfox.info/en/deal/165238
+  ![Screenshot from 2023-12-21 05-29-34](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/6447a4f5-75fa-4374-bd3f-0bc051894621)
+
+- Proposal Deal ans storage status
+  
+- Deal status
+  ![Screenshot from 2023-12-21 06-34-15](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/835d1b5a-bcc5-43a4-87db-e2362eb0e5fc)
+
+
+- Storage status
+  ![Screenshot from 2023-12-21 06-32-59](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/0d16469f-92ef-427d-8983-f848a093d66e)
+
+ 
 ## 🔍The problem it solves
 
 In the face of systemic challenges within the traditional private investment fund market, IC CLUB emerges as a transformative solution, addressing the longstanding barriers that have hindered the participation of aspiring investors in funding initiatives for innovative projects, including startups.
