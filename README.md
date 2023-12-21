@@ -1,4 +1,4 @@
-#  This project is made under PUSH BEB Hackathon
+#  This project is made under PUSH BRB Hackathon
 
 ![Screenshot from 2023-12-21 06-52-40](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/2cb6223e-289a-4150-925c-84c3b2c01831)
 
