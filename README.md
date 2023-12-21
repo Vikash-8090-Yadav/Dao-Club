@@ -134,7 +134,8 @@ Transaction after contribution
   ![Screenshot from 2023-12-21 05-29-34](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/6447a4f5-75fa-4374-bd3f-0bc051894621)
 
 - Proposal Deal and storage status
-  
+  https://calibration.filfox.info/en/deal/165297
+
 - Deal status
   ![Screenshot from 2023-12-21 06-34-15](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/835d1b5a-bcc5-43a4-87db-e2362eb0e5fc)
 
