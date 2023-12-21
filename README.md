@@ -101,7 +101,8 @@ Transaction after contribution
 - This action transfers the proposal amount to the specified recipient.
 - Owners can also close proposals for various reasons, such as cancellation or to avoid sending funds.
 - 
-- ![Screenshot](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/4ca59e4e-5725-45d3-80cd-506e93a35b24)
+![Screenshot from 2023-12-21 06-38-56](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/15e4d65a-063b-405c-b696-d1f53247a6c6)
+
 
 - After executing  (The amount 1 FIL transferred to the destination address)
 - for verification - https://calibration.filfox.info/en/message/bafy2bzacea2ll2jp72i26llpabdkapcgp7oj2atyt6jbbnbo7hvr5jfuexr56?t=1
@@ -147,7 +148,9 @@ Transaction after contribution
  
 ## 🔍The problem it solves
 
-In the face of systemic challenges within the traditional private investment fund market, IC CLUB emerges as a transformative solution, addressing the longstanding barriers that have hindered the participation of aspiring investors in funding initiatives for innovative projects, including startups.
+#### Unleashing the Potential of DataDAOs on Filecoin with FVM Integration
+
+With the Filecoin Virtual Machine (FVM) now live on the Filecoin mainnet, a new era of programmability around storage has emerged, offering direct access to the dataset state on the Filecoin network. This smart contract layer presents a unique opportunity to catalyze the development of DataDAOs (Decentralized Autonomous Organizations for Data) on FVM, unlocking the potential to curate, preserve, monetize, and promote a myriad of valuable datasets to generate substantial value for stakeholders.
 
 <br>
 
@@ -171,14 +174,11 @@ In the face of systemic challenges within the traditional private investment fun
       <th>URL</th>
     </tr>
     <tr>
-      <td>ICP MAINNET</td>
-      <td>https://h7t4t-tyaaa-aaaap-abqka-cai.icp0.io
+      <td>Vercel</td>
+      <td>
+        https://daoclub.vercel.app/
       </td>
     </tr>
-    <tr>
-      <td>ICP CANDID UI</td>
-      <td>https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=hkun6-sqaaa-aaaap-abqjq-cai
-</td>
     </tr>
     </table>
 </div>
