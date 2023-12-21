@@ -1,10 +1,11 @@
 #  This project is made under PUSH BEB Hackathon
 
+![Screenshot from 2023-12-21 06-52-40](https://github.com/Vikash-8090-Yadav/Dao-Club/assets/85225156/2cb6223e-289a-4150-925c-84c3b2c01831)
 
 
 # Data Dao Club
 
-Dao Club allows you to manage investment clubs, and to spread access to participate in investment funds to anyone, decentralized, agile, and without bureaucracy
+Dao Club allows you to manage investment clubs, and to spread access to participate in investment funds to anyone, decentralized, agile, and without bureaucracy.Implementing a comprehensive on-chain governance system allows DataDAO members to create and vote on proposals, covering aspects such as member management, dataset storage and distribution, and token distribution. This ensures a democratic and transparent decision-making process within the DAO.
 
 <br>
 
@@ -28,14 +29,11 @@ Dao Club allows you to manage investment clubs, and to spread access to particip
  
 ## 💡Introduction
 
-IC CLUB stands as a pioneering platform, revolutionizing the landscape of investment management. At its core, IC CLUB is designed to empower users by providing a decentralized, agile, and bureaucracy-free environment for managing investment clubs. The platform leverages innovative technologies to ensure transparency, security, and efficiency in investment processes.
+In the ever-evolving landscape of decentralized finance, Dao Club emerges as a groundbreaking platform, offering a seamless solution for managing investment clubs and democratizing access to investment funds. This innovative platform is designed to be decentralized, agile, and free from bureaucratic hurdles, providing users with unparalleled flexibility in their investment strategies.
 
-One of the standout features of IC CLUB is its commitment to decentralization. Through the use of blockchain technology, the platform ensures that investment club data is transparent, secure, and immutable. This decentralized approach eliminates the need for intermediaries, putting control directly into the hands of the users.'
- 
-## 💡Our Vision
-At IC CLUB, we envision a future where investment management is seamlessly woven into the fabric of decentralization, empowerment, and innovation. Our vision is to transform the traditional landscape of investment clubs by pioneering a platform that empowers individuals, nurtures financial autonomy, and redefines the norms of transparency and security.
+DataDAO members can create and vote on proposals, covering aspects such as member management, dataset storage and distribution, and token distribution. This ensures a democratic and transparent decision-making process within the DAO.
+One of the standout features of DAO CLUB is its commitment to decentralization. Through the use of blockchain technology, the platform ensures that investment club data is transparent, secure, and immutable. This decentralized approach eliminates the need for intermediaries, putting control directly into the hands of the users.'
 
-In this future, IC CLUB stands as a beacon of decentralization, embracing the power of blockchain technology to forge a new era in investment management. We see a world where users have direct control over their financial endeavors, free from the constraints of bureaucracy and intermediaries. The platform is designed to be agile, responsive, and tailored to the needs of those who seek a more transparent, secure, and efficient investment experience.
 
 ## Smart Contract deployed on calibration testnet
 - Smart contract Address - 0xAb873F3E802392E5Eb105e06AF38b28628e1dd76
@@ -189,11 +187,11 @@ With the Filecoin Virtual Machine (FVM) now live on the Filecoin mainnet, a new 
 To run the Edu.dev locally, follow these steps:
 1. Clone the repository:
  ```bash
- git clone  https://github.com/Vikash-8090-Yadav/IC-CLUB.git
+ git clone  https://github.com/Vikash-8090-Yadav/Dao-Club.git
  ```
  2. Navigate to the project directory:
 ```bash
-cd  IC-CLUB
+cd  Dao-Club
 ```
 3. Node Re-versioning
 
@@ -205,44 +203,32 @@ export NODE_OPTIONS=--openssl-legacy-provider
 ```bash
 npm install --legacy-peer-deps
 ```
-5. Start the dfx sdk:
-```bash
-dfx start --background --clean
-```
-6. Deploy the Canister:
-```bash
-dfx deploy --network ic
-```
+
 6. Access the dApp:
-Open your web browser and visit the URL SHOWING IN UR TERMINAL to interact with the IC CLUB
+```bash
+npm start
+```
+Open your web browser and visit the URL SHOWING IN UR TERMINAL to interact with the DAO CLUB
 
 <br>
 
-# Project Gallery
-
-### Login Page
-
-![Screenshot from 2023-11-13 01-12-08](https://github.com/Vikash-8090-Yadav/IC-CLUB/assets/85225156/dd06f841-bbc6-4c95-a15a-1d67dbbd8e36)
-
-
 ## 🛠️Technologies we used
 
-[![Powered by Internet Computer](https://img.shields.io/badge/Powered_by-ICP-3770A0?logo=internet-computer)](https://dfinity.org/)
-
+[![Powered by Filecoin](https://img.shields.io/badge/Powered_by-Filecoin-0174F2?logo=filecoin)](https://filecoin.io/)
+[![Powered by Lighthouse](https://img.shields.io/badge/Powered_by-Lighthouse-ff69b4?logo=lighthouse)](https://lighthouse.filecoin.io/)
 [![Built with React.js](https://img.shields.io/badge/Built_with-React.js-61DAFB?logo=react)](https://reactjs.org/)
-
 [![Developed in Motoko](https://img.shields.io/badge/Developed_in-Motoko-2196F3?logo=dfinity)](https://sdk.dfinity.org/)
-
 [![Tailwind CSS](https://img.shields.io/badge/Styled_with-Tailwind_CSS-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
-
 [![Powered by Ethereum](https://img.shields.io/badge/Powered_by-Ethereum-3C3C3D?logo=ethereum)](https://ethereum.org/)
 
 | Technology        | Description                                                | Official Website                                     |
 |-------------------|------------------------------------------------------------|------------------------------------------------------|
 | React.js          | JavaScript library for building user interfaces, often used for server-rendered or statically-generated applications | [React.js](https://reactjs.org/)                      |
 | Tailwind CSS      | Utility-first CSS framework for building custom designs   | [Tailwind CSS](https://tailwindcss.com/)              |
-| Motoko            | Programming language used for smart contract development on the Internet Computer blockchain | [Motoko](https://sdk.dfinity.org/docs/language-guide/motoko.html) |
-| ICP Blockchain    | Decentralized blockchain platform for building cross-chain decentralized applications | [Internet Computer (ICP)](https://dfinity.org/)      |
+| Solidity | Programming language used for smart contract development on the Ethereum blockchain | https://docs.soliditylang.org/ |
+| Filecoin   |Protocol and network for decentralized storage, allowing users to buy and sell unused storage space using the FIL cryptocurrency|  https://filecoin.io/   |
+|LightHouse | Store file Secure, Reliable, & Lightning-Fast with Lighthouse. |https://www.lighthouse.storage/|
+
 
 
 <be>
@@ -250,12 +236,11 @@ Open your web browser and visit the URL SHOWING IN UR TERMINAL to interact with 
 
 ## 🎥 Video Demo
 
-
-https://youtu.be/YsY6tG8W108
+https://www.youtube.com/watch?v=rxKPB2QOXy0
 
 ## 🤝 Contributing
 
-Contributions to Algo-Media are always welcome! If you'd like to contribute, please follow these guidelines:
+Contributions to Dao Club are always welcome! If you'd like to contribute, please follow these guidelines:
 Fork the repository.
 
 Create a new branch for your feature or bug fix:
@@ -281,13 +266,6 @@ We appreciate your contributions and thank you for helping us improve Algo-Media
 </div>
 
 ## Project Contributors
-
-
-
-## 🌐 Socials:
-
-
-
 
 ## Project Contributor (Member)
 
