@@ -195,7 +195,7 @@ async function verify(){
     }
     if(chk){
       const polygonScanlink = `https://calibration.filfox.info/en/tx/${hash.transactionHash}`
-    toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
+    toast.success(<a target="_blank" href={polygonScanlink}>Transaction Completed, Click to view transaction</a>, {
       position: "top-right",
       autoClose: 18000,
       hideProgressBar: false,

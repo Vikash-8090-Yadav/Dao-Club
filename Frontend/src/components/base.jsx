@@ -86,7 +86,7 @@ function Base() {
         
           const Hash = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
           const polygonScanlink = `https://calibration.filfox.info/en/tx/${Hash.transactionHash}`
-          toast.success(<a target="_blank" href={polygonScanlink}>Verification Completed, Click to view transaction</a>, {
+          toast.success(<a target="_blank" href={polygonScanlink}>Actor Created, Click to view transaction</a>, {
             position: "top-right",
             autoClose: 18000,
             hideProgressBar: false,
