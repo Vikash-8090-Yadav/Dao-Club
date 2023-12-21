@@ -55,7 +55,7 @@ async function getdealId(){
 
   const cid1 = clubs[proposalId-1].Cid;
 
-  console.log(cid1)
+  console.log("UNder deal",cid1)
 
   const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=${cid1}`)
   // const { pieceCID, dealInfo } = poDSI;
@@ -106,15 +106,16 @@ if (dealStatusLink) {
 async function verify(){
   var walletAddress = localStorage.getItem("filWalletAddress");
   await getContract(walletAddress);
-  var clubs = await contractPublic.methods.getMyClubs().call()
+  
   // console.log(clubs[0].CID)
 
     const clubId =  localStorage.getItem("clubId");
     const proposalId = localStorage.getItem("proposalId")
+    var clubs = await contractPublic.methods.getProposalsByClub(clubId).call();
 
     
 
-  const cid1 = clubs[0].CID;
+  const cid1 = clubs[proposalId-1].Cid;
   console.log(cid1);
 
   const response1 = await axios.get(`https://api.lighthouse.storage/api/lighthouse/get_proof?network=testnet&cid=${cid1}`)
@@ -277,7 +278,7 @@ const carq1 = await contractPublic.methods.getdelandstorgae(clubId,proposalId,De
 async function runProposal(event) {
   
   var filWalletAddress = localStorage.getItem("filWalletAddress");
-  await getContract();
+  await getContract(filWalletAddress);
   if(contractPublic != undefined) {
     var option_execution = $('#option_execution').val()
     var password = $('#passwordShowPVExecution').val();
@@ -321,7 +322,7 @@ async function runProposal(event) {
             const signedTx = await web3.eth.accounts.signTransaction(
               {
                 from: my_wallet[0].address,
-                gasLimit: "21000000",
+                gasLimit: "30000000",
                 maxFeePerGas: "300000000",
                 maxPriorityFeePerGas: "100000000",
         to: contractPublic.options.address,
